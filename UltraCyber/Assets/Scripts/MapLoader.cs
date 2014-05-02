@@ -19,6 +19,9 @@ public class MapLoader : MonoBehaviour {
 	private List<Block> greenBlocks = new List<Block>(); //pooled
 
 	[SerializeField]
+	private Texture2D StartBlock;
+
+	[SerializeField]
 	private GameObject GreenBlock;
 
 	[SerializeField]
@@ -51,18 +54,28 @@ public class MapLoader : MonoBehaviour {
 		TestSpawn();
 	}
 
+
+	//MAKE MAP!!	public GameObject CreateBlockRow(Texture2D blockRowImage) {
+
 	public void TestSpawn() {
 
 		float startY = 0;
+		GameObject startBlock = CreateBlockRow(StartBlock);
+		startBlock.transform.position = new Vector2(0,startY);
+		startBlock.transform.parent = transform; //get outta here.
+		
+		
 		while(startY < 200) {
 
-			GameObject testRow = (GameObject)GameObject.Instantiate(rowBlocks[UnityEngine.Random.Range(0,rowBlocks.Count)]);
-			testRow.gameObject.SetActive(true);
-			testRow.transform.position = new Vector2(0,startY);
-			testRow.transform.parent = transform; //get outta here.
-			startY += 1;
 
-			Vector2 rightWallPos = new Vector2(9, startY);
+			if(startY%2 == 0) {
+				GameObject testRow = (GameObject)GameObject.Instantiate(rowBlocks[UnityEngine.Random.Range(0,rowBlocks.Count)]);
+				testRow.gameObject.SetActive(true);
+				testRow.transform.position = new Vector2(0,startY);
+				testRow.transform.parent = transform; //get outta here.
+			}
+			startY += 1;
+			Vector2 rightWallPos = new Vector2(11, startY);
 			
 			GameObject rightWall = (GameObject)GameObject.Instantiate(RightWall);
 			rightWall.gameObject.SetActive(true);

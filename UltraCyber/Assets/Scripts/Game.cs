@@ -48,11 +48,12 @@ public class Game : MonoBehaviour
 	{
 		player.movementForce = config.playerMovementForce;
 		player.jumpForce = config.playerJumpForce;
+		player.transform.position = FindSpawnPoint();
 	}
 
 	Vector2 FindSpawnPoint()
 	{
-		return Vector2.zero;
+		return new Vector2(1,2.015f);// Vector2.zero;
 	}
 
 	void Update()
@@ -68,14 +69,24 @@ public class Game : MonoBehaviour
 		}
 	}
 
+	private bool DirKeyHeld() {
+		return Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow);
+	}
+	private int GetKeyDir(){
+		if (Input.GetKey(KeyCode.LeftArrow))
+			return -1;
+		else
+			return 1;
+	}
+
 	void UpdateInput()
 	{
 		for (uint i = 0; i < players.Length; ++i)
 		{
 			Player player = players[(int)i];
-			player.input.horizontal = GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
-			player.input.jump = GameInput.GetXboxButton(i, GameInput.Xbox360Button.A);
-			player.input.shoot = GameInput.GetXboxButton(i, GameInput.Xbox360Button.B);
+			player.input.horizontal = DirKeyHeld() ? GetKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
+			player.input.jump = GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || Input.GetKeyDown(KeyCode.Space);
+			player.input.shoot = GameInput.GetXboxButton(i, GameInput.Xbox360Button.B) || Input.GetKeyDown(KeyCode.X);
 			player.input.aimDirection = new Vector2(player.input.horizontal, GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
 		}
 	}
