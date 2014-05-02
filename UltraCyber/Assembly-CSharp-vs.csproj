@@ -39,10 +39,10 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity434/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity434/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +50,12 @@
      <Compile Include="Assets\Scripts\DebugUtil.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\GameInput.cs" />
+     <Compile Include="Assets\Scripts\GameMap.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Block.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\BlockRow.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Map.cs" />
+     <Compile Include="Assets\Scripts\MapLoader.cs" />
+     <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
