@@ -46,11 +46,8 @@ public class Game : MonoBehaviour
 
 	void RespawnPlayer(Player player, Vector2 position)
 	{
-		player.movementSpeed = config.playerMovementSpeed;
-		player.jumpStrength = config.playerJumpForce;
-		player.gravity = config.playerGravity;
-		player.currentJumpForce = 0.0f;
-		player.jumpDeceleration = config.playerJumpDeceleration;
+		player.movementForce = config.playerMovementForce;
+		player.jumpForce = config.playerJumpForce;
 	}
 
 	Vector2 FindSpawnPoint()
@@ -87,37 +84,67 @@ public class Game : MonoBehaviour
 
 	void UpdatePlayer(Player player)
 	{
+		var rigidBody = player.GetComponent<Rigidbody2D>();
 		Animator animator = player.animator;
+//
+//		player.gravity.Normalize();
+//
+//		if (player.currentJumpForce > 0.0f)
+//		{
+//			player.currentJumpForce -= player.jumpDeceleration * Time.deltaTime;
+//			if (player.currentJumpForce < 0.0f)
+//				player.currentJumpForce = 0.0f;
+//		}
+//
+//		Vector2 gravPerp = new Vector2(-player.gravity.y, player.gravity.x);
+//
+//		debugString = "" + gravPerp;
+//
+//		Vector2 finalMovement = Vector2.zero;
+//		//if (player.onGround)
 
-		player.gravity.Normalize();
+//
+//		if (rigidBody.velocity.magnitude < player.movementSpeed)
+//			rigidBody.AddForce(gravPerp * (((float)player.input.horizontal) * player.movementAcceleration * Time.deltaTime));
+//		//finalMovement += gravPerp * (((float)player.input.horizontal) * player.movementSpeed * Time.deltaTime);
+//		if (Mathf.Abs(rigidBody.velocity.x) > Mathf.Epsilon)
+//		{
+//			float decrease = player.movementDeceleration * Time.deltaTime;
+//			if (rigidBody.velocity.x < decrease)
+//			{
+//				rigidBody.velocity = new Vector2(0.0f, rigidBody.velocity.y);
+//			}
+//			else
+//			{
+//				rigidBody.AddForce(new Vector2(-Mathf.Sign(rigidbody.velocity.x) * decrease, 0.0f));
+//			}
+//		}
+//
+//
+//		if (!player.onGround)
+//			rigidBody.AddForce(player.gravity * (config.playerGravityStrength * Time.deltaTime));
+//
+//		if (player.input.jump && player.onGround)
+//			player.currentJumpForce = player.jumpStrength;
+//
+//		if (player.currentJumpForce > 0.0f)
+//		{
+//			rigidBody.AddForce(-player.gravity * (player.currentJumpForce * Time.deltaTime));
+//		}
+//
+//		Vector2 dir = finalMovement.normalized;
+//
 
-		if (player.currentJumpForce > 0.0f)
-		{
-			player.currentJumpForce -= player.jumpDeceleration * Time.deltaTime;
-			if (player.currentJumpForce < 0.0f)
-				player.currentJumpForce = 0.0f;
-		}
-		Vector2 gravPerp = new Vector2(-player.gravity.y, player.gravity.x);
-
-		debugString = "" + gravPerp;
-
-		Vector2 finalMovement = Vector2.zero;
-		//if (player.onGround)
-		finalMovement += gravPerp * (((float)player.input.horizontal) * player.movementSpeed * Time.deltaTime);
-
-		if (!player.onGround)
-			finalMovement += player.gravity * (config.playerGravityStrength * Time.deltaTime);
+		rigidBody.AddForce(Vector2.right * (((float)player.input.horizontal) * player.movementForce * Time.deltaTime));
 
 		if (player.input.jump && player.onGround)
-			player.currentJumpForce = player.jumpStrength;
+		{
+			// impulse
+			rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
+		}
 
-		finalMovement += -player.gravity * (player.currentJumpForce * Time.deltaTime);
-
-		player.transform.position = player.transform.position + (Vector3)finalMovement;
-
-		Vector2 dir = finalMovement.normalized;
-
-		float dot = Vector2.Dot(dir, player.gravity);
+		Vector2 dir = rigidBody.velocity.normalized;
+		float dot = Vector2.Dot(dir, Vector3.down);
 
 		if (!player.onGround)
 		{
@@ -134,7 +161,7 @@ public class Game : MonoBehaviour
 		}
 		else
 		{
-			if (finalMovement.sqrMagnitude > 0.0f && (Vector2.Dot(dir, gravPerp) > 0.7f || Vector2.Dot(dir, gravPerp) < -0.7f))
+			if (rigidBody.velocity.magnitude > 0.05f && (Vector2.Dot(dir, Vector2.right) > 0.7f || Vector2.Dot(dir, Vector2.right) < -0.7f))
 			{
 				//debugString = "walk";
 				animator.Play("PlayerWalk");
@@ -148,12 +175,18 @@ public class Game : MonoBehaviour
 
 		if (player.input.horizontal != 0)
 		{
-			player.transform.localScale = new Vector3(player.input.horizontal > 0 ? 1.0f : -1.0f, 1.0f, 1.0f); 
+			player.graphics.transform.localScale = new Vector3(player.input.horizontal > 0 ? 1.0f : -1.0f, 1.0f, 1.0f); 
 		}
 
 		player.input.horizontal = 0;
 		player.input.jump = false;
 		player.input.shoot = false;
+		debugString = "" + rigidBody.velocity;
+
+		float maxSpeed = config.maxSpeed;
+
+		if (rigidBody.velocity.sqrMagnitude >= maxSpeed * maxSpeed)
+			rigidBody.velocity = rigidBody.velocity.normalized * maxSpeed;
 	}
 
 	void OnGUI()

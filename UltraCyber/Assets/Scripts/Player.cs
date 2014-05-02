@@ -11,45 +11,33 @@ public class Player : MonoBehaviour
 		public Vector2 aimDirection;
 	}
 
+	public GameObject graphics;
+
 	public PlayerInput input = new PlayerInput();
 
 	public Animator animator;
 	public Animator gunAnimator;
 	public CollisionEventSender groundEventSender; 	
 
-	public float movementSpeed;
-	public float jumpStrength;
-
-	public float jumpDeceleration;
-
-	public Vector2 gravity;
+	public float movementForce;
+	public float jumpForce;
 
 	public uint shotsLeft;
-
-	public float currentJumpForce = 0.0f;
-
-	int asdaf = 0;
-
+	
 	void OnEnable()
 	{
 		Player me = this;
 
 		groundEventSender.TriggerEnter2D += (CollisionEventSender in_trigger, Collider2D in_other) => {
 			me._onGround = true;
-			++ asdaf;
-			Debug.Log(asdaf + " ENTER");
 		};
 
 		groundEventSender.TriggerStay2D += (CollisionEventSender in_trigger, Collider2D in_other) => {
 			me._onGround = true;
-			++ asdaf;
-			Debug.Log(asdaf + " STAY");
 		};
 
 		groundEventSender.TriggerExit2D += (CollisionEventSender in_trigger, Collider2D in_other) => {
 			me._onGround = false;
-			++ asdaf;
-			Debug.Log(asdaf + " EXIT");
 		};
 	}
 
