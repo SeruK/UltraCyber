@@ -35,6 +35,12 @@ public static class GameInput
 		return Input.GetAxis(GetXboxAxisName(in_index, in_axis));
 	}
 
+	public static int GetXboxAxis(uint in_index, Xbox360Axis in_axis)
+	{
+		float val = GetXboxAxisValue(in_index, in_axis);
+		return Mathf.Approximately(val, 0.0f) ? 0 : Mathf.CeilToInt(val);
+	}
+
 	private static KeyCode GetXboxKeyCode(uint in_index, Xbox360Button in_button)
 	{
 		return GetJoystickKey(in_index, (uint)in_button);
