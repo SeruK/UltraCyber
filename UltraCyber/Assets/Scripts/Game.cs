@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Game : MonoBehaviour
 {
+	[SerializeField]
+	public EffectSpawner effectSpawner;
 	// temp
 	public GUISkin debugGUISkin;
 	public GameObject playerPrefab;
@@ -90,6 +92,9 @@ public class Game : MonoBehaviour
 
 	void Update()
 	{
+		if (Input.GetKeyUp(KeyCode.A)) 
+			effectSpawner.SpawnExplosion(new Vector2(1,1));
+			
 		UpdateInput();
 	}
 
