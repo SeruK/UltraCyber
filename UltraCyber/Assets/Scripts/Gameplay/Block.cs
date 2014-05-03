@@ -16,7 +16,12 @@ public class Block : MonoBehaviour {
 	{
 
 		if(transform.position.y > collider.transform.position.y)
-		Destroy ();
+			Destroy ();
+	}
+
+	void OnCollisionStay2D(Collision2D collision) {
+
+
 	}
 
 

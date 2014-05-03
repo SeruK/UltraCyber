@@ -18,7 +18,7 @@ public class Game : MonoBehaviour
 
 	void OnEnable()
 	{
-		int numPlayers = 2;
+		int numPlayers = 1;
 
 		players = new Player[numPlayers];
 
