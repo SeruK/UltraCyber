@@ -42,6 +42,8 @@ public class Game : MonoBehaviour
 	public CustomAudioClip clickClip;
 	public CustomAudioClip dataClip;
 	public CustomAudioClip dataDropClip;
+	public CustomAudioClip winClip;
+	public CustomAudioClip ultraCyberClip;
 
 	public Config config;
 
@@ -150,6 +152,10 @@ public class Game : MonoBehaviour
 		}
 
 		camera.transform.position = new Vector3(camera.transform.position.x, config.cameraStartY, camera.transform.position.z);
+
+		var hoverAnim = mapLoader.hoverCraft.GetComponent<Animator>();
+		
+		hoverAnim.Play("HoverIdle");
 	}
 
 	Player InstantiatePlayer(string name)
@@ -361,7 +367,7 @@ public class Game : MonoBehaviour
 			if (floored != players[0].lastScoreInt)
 			{
 				players[0].lastScoreInt = floored;
-				SpawnTextAt("+" + floored, (Vector2)players[0].transform.position + new Vector2(0.7f, 1.2f));
+				SpawnTextAt("+" + floored, (Vector2)players[0].transform.position + new Vector2(0.7f, 1.2f), config.playerColors[0]);
 			}
 			players[0].diskIndicator.enabled = true;
 			debugString = "P1 has the data! Score: " + ((int)players[0].score).ToString();
@@ -373,7 +379,7 @@ public class Game : MonoBehaviour
 			if (floored != players[1].lastScoreInt)
 			{
 				players[1].lastScoreInt = floored;
-				SpawnTextAt("+" + floored, (Vector2)players[1].transform.position + new Vector2(0.7f, 1.2f));
+				SpawnTextAt("+" + floored, (Vector2)players[1].transform.position + new Vector2(0.7f, 1.2f), config.playerColors[1]);
 			}
 			players[1].diskIndicator.enabled = true;
 			debugString = "P2 has the data! Score: " + ((int)players[1].score).ToString();
@@ -385,11 +391,12 @@ public class Game : MonoBehaviour
 		}
 	}
 
-	void SpawnTextAt(string text, Vector2 pos)
+	void SpawnTextAt(string text, Vector2 pos, Color col)
 	{
 		var textGo = Instantiate(textPrefab, pos, Quaternion.identity) as GameObject;
 		var txt = textGo.GetComponent<TextMesh>();
 		txt.text = text;
+		txt.color = col;
 		StartCoroutine(_fadeOutText(txt));
 	}
 
@@ -491,6 +498,10 @@ public class Game : MonoBehaviour
 
 		startToPlayIndicator.enabled = true;
 
+		var hoverAnim = mapLoader.hoverCraft.GetComponent<Animator>();
+
+		hoverAnim.Play("HoverFlyAway");
+
 		if (p1 == p2)
 		{
 			debugString = "Draw! Everyone's a winner! Start to play again";
@@ -510,6 +521,15 @@ public class Game : MonoBehaviour
 			debugString = "Player two wins! Start to play again";
 			Debug.Log("P2 WINS!!!!");
 		}
+
+		StartCoroutine(EndGameSounds());
+	}
+
+	IEnumerator EndGameSounds()
+	{
+		PlayClip(winClip);
+		yield return new WaitForSeconds(3.0f);
+		PlayClip(ultraCyberClip);
 	}
 
 	void UpdateInput()
@@ -544,6 +564,18 @@ public class Game : MonoBehaviour
 		if (player.weaponCooldown > 0.0f)
 		{
 			player.weaponCooldown -= Time.deltaTime;
+			player.tint = new Color(255, 125, 125);
+		}
+		else
+		{
+			for (int i = 0; i < players.Length; ++i)
+			{
+				if (players[i] == player)
+				{
+					player.tint = config.playerColors[i];
+					break;
+				}
+			}
 		}
 
 		if (player.input.shoot && player.weaponCooldown <= 0.0f)
@@ -655,6 +687,7 @@ public class Game : MonoBehaviour
 
 	void ShootBullet(Player player)
 	{
+		CameraShaker.Instance.Shake(0.1f, 0.4f);
 		var bulletGo = Instantiate(bulletPrefab, player.gunOrigin.position, Quaternion.identity) as GameObject;
 		var rigid = bulletGo.GetComponent<Rigidbody2D>();
 
@@ -676,6 +709,20 @@ public class Game : MonoBehaviour
 			var playa = coll.gameObject.GetComponent<Player>();
 			if (playa)
 			{
+				for (int i = 0; i < players.Length; ++i)
+				{
+					if (players[i] == playa)
+					{
+						if (dataHolder == (DataHolder)(i + 1))
+						{
+							dataHolder = DataHolder.None;
+							playa.dataCooldown = config.diskCooldown;
+							InstantiateData((Vector2)playa.transform.position + new Vector2(0.0f, 0.5f));
+							break;
+						}
+					}
+				}
+
 				playa.rigidbody2D.AddForce(coll.relativeVelocity.normalized * (config.bulletImpactForce / Time.deltaTime));
 				PlayClip(impactPlayerClip);
 				CameraShaker.Instance.Shake();
@@ -691,9 +738,8 @@ public class Game : MonoBehaviour
 		rigid.AddForce(dir * (config.bulletForce / Time.deltaTime) + player.GetComponent<Rigidbody2D>().velocity);
 		bulletGo.GetComponent<CollisionEventSender>().CollisionEnter2D += BulletImpact;
 		DestroyAfter(bulletGo, config.bulletLife);
-
-
-		player.rigidbody2D.AddForce(-dir * (config.bulletForce / Time.deltaTime));
+		
+		player.rigidbody2D.AddForce(-dir * (config.knockback / Time.deltaTime));
 	}
 
 	Vector2 GetWeaponDirection(Player player)

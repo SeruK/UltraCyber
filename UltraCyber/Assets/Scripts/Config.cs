@@ -26,4 +26,6 @@ public class Config : MonoBehaviour
 	public float diskCooldown = 2.0f;
 
 	public Color[] playerColors = {};
+
+	public float knockback = 5.0f;
 }
