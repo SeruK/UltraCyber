@@ -35,6 +35,7 @@ public class Game : MonoBehaviour
 	public CustomAudioClip spawnClip;
 	public CustomAudioClip shootClip;
 	public CustomAudioClip impactClip;
+	public CustomAudioClip impactPlayerClip;
 	public CustomAudioClip footstepClip;
 	public CustomAudioClip jumpClip;
 	public CustomAudioClip clickClip;
@@ -116,7 +117,7 @@ public class Game : MonoBehaviour
 
 		mapLoader.Recreate();
 
-		int numPlayers = 1;
+		int numPlayers = 2;
 		
 		players = new Player[numPlayers];
 		
@@ -125,6 +126,8 @@ public class Game : MonoBehaviour
 			Player player = InstantiatePlayer("Player " + i);
 			players[i] = player;
 			player.tint = config.playerColors[i];
+
+			player.gameObject.layer = i == 0 ? 8 : 13;
 
 			Vector2 spawnPoint;
 			if (FindSpawnPoint(out spawnPoint))
@@ -457,6 +460,33 @@ public class Game : MonoBehaviour
 	{
 		var bulletGo = Instantiate(bulletPrefab, player.gunOrigin.position, Quaternion.identity) as GameObject;
 		var rigid = bulletGo.GetComponent<Rigidbody2D>();
+
+		var bullet = bulletGo.GetComponent<Bullet>();
+
+		for (int i = 0; i < players.Length; ++i)
+		{
+			if (player == players[i])
+			{
+				if (i == 1)
+				{
+					bullet.gameObject.layer = 12;
+				}
+				break;
+			}
+		}
+
+		bullet.onHit += (Bullet bull, Collision2D coll) => {
+			var playa = coll.gameObject.GetComponent<Player>();
+			if (playa)
+			{
+				playa.rigidbody2D.AddForce(coll.relativeVelocity.normalized * (config.bulletImpactForce / Time.deltaTime));
+				PlayClip(impactPlayerClip);
+			}
+			else
+			{
+				PlayClip(impactClip);
+			}
+		};
 
 		Vector2 dir = GetWeaponDirection(player);
 
