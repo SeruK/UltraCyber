@@ -12,17 +12,17 @@ public class Block : MonoBehaviour {
 	public BlockType blockType;
 
 	public int haxIndex = 0;
-//	void OnCollisionEnter2D(Collision2D collider)
-//	{
-//
-//		if(transform.position.y > collider.gameObject.transform.position.y)
-//			Destroy ();
-//	}
-//
-//	void OnCollisionStay2D(Collision2D collision) {
-//			//collision.transform.position = 
-//
-//	}
+	void OnCollisionEnter2D(Collision2D collider)
+	{
+		if(collider.gameObject.tag == "Bully")
+			Destroy ();
+
+	}
+
+	void OnCollisionStay2D(Collision2D collision) {
+		//collision.transform.position = 
+
+	}
 
 
 

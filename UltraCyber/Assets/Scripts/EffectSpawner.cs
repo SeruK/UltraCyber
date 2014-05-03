@@ -62,7 +62,7 @@ public class EffectSpawner : AutoDestroy {
 	public void SpawnBulletImpact(Vector2 position) {
 		GameObject animator = GameObject.Instantiate(BulletImpactEffect) as GameObject;
 		animator.transform.position = position;
-		animator.GetComponent<Animator>().Play("BulletImpact");
+		animator.GetComponent<Animator>().Play("FINALIMPACT");
 		animator.gameObject.AddComponent<AutoDestroy>().Init (0.2f);
 	}
 
