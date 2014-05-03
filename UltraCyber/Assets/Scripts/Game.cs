@@ -97,54 +97,6 @@ public class Game : MonoBehaviour
 	{
 		var rigidBody = player.GetComponent<Rigidbody2D>();
 		Animator animator = player.animator;
-//
-//		player.gravity.Normalize();
-//
-//		if (player.currentJumpForce > 0.0f)
-//		{
-//			player.currentJumpForce -= player.jumpDeceleration * Time.deltaTime;
-//			if (player.currentJumpForce < 0.0f)
-//				player.currentJumpForce = 0.0f;
-//		}
-//
-//		Vector2 gravPerp = new Vector2(-player.gravity.y, player.gravity.x);
-//
-//		debugString = "" + gravPerp;
-//
-//		Vector2 finalMovement = Vector2.zero;
-//		//if (player.onGround)
-
-//
-//		if (rigidBody.velocity.magnitude < player.movementSpeed)
-//			rigidBody.AddForce(gravPerp * (((float)player.input.horizontal) * player.movementAcceleration * Time.deltaTime));
-//		//finalMovement += gravPerp * (((float)player.input.horizontal) * player.movementSpeed * Time.deltaTime);
-//		if (Mathf.Abs(rigidBody.velocity.x) > Mathf.Epsilon)
-//		{
-//			float decrease = player.movementDeceleration * Time.deltaTime;
-//			if (rigidBody.velocity.x < decrease)
-//			{
-//				rigidBody.velocity = new Vector2(0.0f, rigidBody.velocity.y);
-//			}
-//			else
-//			{
-//				rigidBody.AddForce(new Vector2(-Mathf.Sign(rigidbody.velocity.x) * decrease, 0.0f));
-//			}
-//		}
-//
-//
-//		if (!player.onGround)
-//			rigidBody.AddForce(player.gravity * (config.playerGravityStrength * Time.deltaTime));
-//
-//		if (player.input.jump && player.onGround)
-//			player.currentJumpForce = player.jumpStrength;
-//
-//		if (player.currentJumpForce > 0.0f)
-//		{
-//			rigidBody.AddForce(-player.gravity * (player.currentJumpForce * Time.deltaTime));
-//		}
-//
-//		Vector2 dir = finalMovement.normalized;
-//
 
 		rigidBody.AddForce(Vector2.right * (((float)player.input.horizontal) * player.movementForce * Time.deltaTime));
 
@@ -198,6 +150,19 @@ public class Game : MonoBehaviour
 
 		if (rigidBody.velocity.sqrMagnitude >= maxSpeed * maxSpeed)
 			rigidBody.velocity = rigidBody.velocity.normalized * maxSpeed;
+
+		if (Vector2.Dot(player.input.aimDirection, Vector2.up) > 0.5f)
+		{
+			player.gunAnimator.Play("GunUp");
+		}
+		else if (Vector2.Dot(player.input.aimDirection, Vector2.up) < -0.5f)
+		{
+			player.gunAnimator.Play("GunDown");
+		}
+		else
+		{
+			player.gunAnimator.Play("GunSide");
+		}
 	}
 
 	void OnGUI()

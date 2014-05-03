@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 240e294d183bb0b45a98424e08f0f936
+guid: 03a3334b20272cf43bef63939e9d6601
 TextureImporter:
   serializedVersion: 2
   mipmaps:
@@ -16,7 +16,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: .25
     normalMapFilter: 0
-  isReadable: 1
+  isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
@@ -37,247 +37,247 @@ TextureImporter:
   spritePivot: {x: .5, y: .5}
   spritePixelsToUnits: 16
   alphaIsTransparency: 1
-  textureType: 5
+  textureType: 8
   buildTargetSettings:
   - buildTarget: iPhone
     maxTextureSize: 1024
-    textureFormat: 13
+    textureFormat: -2
     compressionQuality: 50
   spriteSheet:
     sprites:
-    - name: Player1_0
+    - name: player1finalgrey_0
       rect:
         serializedVersion: 2
         x: 0
         y: 112
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_1
+    - name: player1finalgrey_1
       rect:
         serializedVersion: 2
         x: 16
         y: 112
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_2
+    - name: player1finalgrey_2
       rect:
         serializedVersion: 2
         x: 0
         y: 96
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_3
+    - name: player1finalgrey_3
       rect:
         serializedVersion: 2
         x: 16
         y: 96
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_4
+    - name: player1finalgrey_4
       rect:
         serializedVersion: 2
         x: 0
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_5
+    - name: player1finalgrey_5
       rect:
         serializedVersion: 2
         x: 16
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_6
+    - name: player1finalgrey_6
       rect:
         serializedVersion: 2
         x: 32
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_7
+    - name: player1finalgrey_7
       rect:
         serializedVersion: 2
         x: 48
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_8
+    - name: player1finalgrey_8
       rect:
         serializedVersion: 2
         x: 64
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_9
+    - name: player1finalgrey_9
       rect:
         serializedVersion: 2
         x: 80
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_10
+    - name: player1finalgrey_10
       rect:
         serializedVersion: 2
         x: 96
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_11
+    - name: player1finalgrey_11
       rect:
         serializedVersion: 2
         x: 112
         y: 80
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_12
+    - name: player1finalgrey_12
       rect:
         serializedVersion: 2
         x: 0
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_13
+    - name: player1finalgrey_13
       rect:
         serializedVersion: 2
         x: 16
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_14
+    - name: player1finalgrey_14
       rect:
         serializedVersion: 2
         x: 32
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_15
+    - name: player1finalgrey_15
       rect:
         serializedVersion: 2
         x: 48
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_16
+    - name: player1finalgrey_16
       rect:
         serializedVersion: 2
         x: 64
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_17
+    - name: player1finalgrey_17
       rect:
         serializedVersion: 2
         x: 80
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_18
+    - name: player1finalgrey_18
       rect:
         serializedVersion: 2
         x: 96
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_19
+    - name: player1finalgrey_19
       rect:
         serializedVersion: 2
         x: 112
         y: 64
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_20
+    - name: player1finalgrey_20
       rect:
         serializedVersion: 2
         x: 0
         y: 48
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_21
+    - name: player1finalgrey_21
       rect:
         serializedVersion: 2
         x: 16
         y: 48
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_25
+    - name: player1finalgrey_25
       rect:
         serializedVersion: 2
         x: 0
         y: 32
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_26
+    - name: player1finalgrey_26
       rect:
         serializedVersion: 2
         x: 16
         y: 32
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_27
+    - name: player1finalgrey_27
       rect:
         serializedVersion: 2
         x: 0
         y: 16
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
-    - name: Player1_28
+    - name: player1finalgrey_28
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 16
         height: 16
-      alignment: 7
+      alignment: 0
       pivot: {x: 0, y: 0}
   spritePackingTag: 
   userData: 
