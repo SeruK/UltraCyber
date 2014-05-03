@@ -41,30 +41,18 @@ public class Game : MonoBehaviour
 
 	public Player[] players;
 
+	public Camera camera;
+
 	private float footstepCooldown;
 
 	void OnEnable()
 	{
-		int numPlayers = 1;
-
-		players = new Player[numPlayers];
-
-		for (int i = 0; i < numPlayers; ++i)
-		{
-			Player player = InstantiatePlayer("Player " + i);
-			players[i] = player;
-
-			RespawnPlayer(player, FindSpawnPoint());
-		}
+		Restart();
 	}
 
 	void OnDisable()
 	{
-		foreach (Player player in players)
-		{
-			if (player && player.gameObject)
-				Destroy(player.gameObject);
-		}
+		RemovePlayers();
 	}
 
 	void DetachAndDestroyAfter(Component obj, float delay)
@@ -92,6 +80,39 @@ public class Game : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 		if (obj)
 			Destroy(obj);
+	}
+
+	void RemovePlayers()
+	{
+		if (players == null)
+			return;
+
+		foreach (Player player in players)
+		{
+			if (player && player.gameObject)
+				Destroy(player.gameObject);
+		}
+
+		players = null;
+	}
+
+	void Restart()
+	{
+		RemovePlayers();
+
+		int numPlayers = 1;
+		
+		players = new Player[numPlayers];
+		
+		for (int i = 0; i < numPlayers; ++i)
+		{
+			Player player = InstantiatePlayer("Player " + i);
+			players[i] = player;
+			
+			RespawnPlayer(player, FindSpawnPoint());
+		}
+
+		camera.transform.position = new Vector3(camera.transform.position.x, config.cameraStartY, camera.transform.position.z);
 	}
 
 	Player InstantiatePlayer(string name)
@@ -147,6 +168,8 @@ public class Game : MonoBehaviour
 
 	void FixedUpdate()
 	{
+		camera.transform.position += new Vector3(0.0f, config.cameraPanSpeed * Time.deltaTime, 0.0f);
+
 		for (int i = 0; i < players.Length; ++i)
 		{
 			UpdatePlayer(players[i]);

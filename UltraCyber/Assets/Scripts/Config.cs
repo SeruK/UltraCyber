@@ -14,4 +14,8 @@ public class Config : MonoBehaviour
 	public float bulletForce;
 	public float bulletLife;
 	public float bulletImpactForce;
+
+	public float cameraPanSpeed;
+	public float cameraStartY;
+	public float cameraEndY;
 }
