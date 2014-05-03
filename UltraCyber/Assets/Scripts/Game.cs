@@ -124,6 +124,7 @@ public class Game : MonoBehaviour
 		{
 			Player player = InstantiatePlayer("Player " + i);
 			players[i] = player;
+			player.tint = config.playerColors[i];
 
 			Vector2 spawnPoint;
 			if (FindSpawnPoint(out spawnPoint))

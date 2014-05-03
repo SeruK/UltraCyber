@@ -21,4 +21,6 @@ public class Config : MonoBehaviour
 
 	public int mapWidth = 11;
 	public int mapHeight = 600;
+
+	public Color[] playerColors = {};
 }

@@ -30,6 +30,23 @@ public class Player : MonoBehaviour
 
 	public uint shotsLeft;
 
+	[SerializeField]
+	private SpriteRenderer bodyRenderer;
+	[SerializeField]
+	private SpriteRenderer gunRenderer;
+
+	public Color tint {
+
+		get {
+			return bodyRenderer.color;
+		}
+
+		set {
+			bodyRenderer.color = value;
+			gunRenderer.color = value;
+		}
+	}
+
 	void OnEnable()
 	{
 		Player me = this;
