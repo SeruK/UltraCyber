@@ -14,6 +14,9 @@ public class MapData {
 
 public class MapLoader : MonoBehaviour {
 
+
+	private int width = 11; //put in config.. ffs.
+
 	private List<GameObject> rowBlocks = new List<GameObject>();
 
 	private List<Block> greenBlocks = new List<Block>(); //pooled
@@ -63,9 +66,21 @@ public class MapLoader : MonoBehaviour {
 		GameObject startBlock = CreateBlockRow(StartBlock);
 		startBlock.transform.position = new Vector2(0,startY);
 		startBlock.transform.parent = transform; //get outta here.
-		
+
+
+
+
 		
 		while(startY < 200) {
+
+			for(int bgX=0;bgX<11;++bgX) {
+				GameObject bgTile = (GameObject)GameObject.Instantiate(BackGroundTiles[0]);
+				bgTile.transform.position = new Vector3(bgX, startY, 1);
+				bgTile.transform.parent = transform;
+				
+
+			}
+
 
 
 			if(startY%2 == 0) {
