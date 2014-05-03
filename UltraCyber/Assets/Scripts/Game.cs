@@ -3,6 +3,14 @@ using System.Collections;
 
 public class Game : MonoBehaviour
 {
+	[System.Serializable]
+	class CustomAudioClip
+	{
+		public AudioClip clip;
+		public float volume;
+		public float pitch;
+	}
+
 	// temp
 	public GUISkin debugGUISkin;
 	public GameObject playerPrefab;
@@ -10,13 +18,22 @@ public class Game : MonoBehaviour
 	public GameObject noBulletPrefab;
 	public GameObject muzzleFlashPrefab;
 
+	// TODO move this somewhere
+	public AudioClip spawnClip;
+	public AudioClip shootClip;
+	public AudioClip impactClip;
+	public AudioClip footstepClip;
+	public AudioClip jumpClip;
+
 	public Config config;
 
 	public Player[] players;
 
+	private float footstepCooldown;
+
 	void OnEnable()
 	{
-		int numPlayers = 2;
+		int numPlayers = 1;
 
 		players = new Player[numPlayers];
 
@@ -77,6 +94,8 @@ public class Game : MonoBehaviour
 
 	void RespawnPlayer(Player player, Vector2 position)
 	{
+		PlayClipAtPoint(spawnClip, position, 1.0f);
+
 		player.movementForce = config.playerMovementForce;
 		player.jumpForce = config.playerJumpForce;
 		player.transform.position = FindSpawnPoint();
@@ -88,9 +107,19 @@ public class Game : MonoBehaviour
 		return new Vector2(1,2.015f);// Vector2.zero;
 	}
 
+	void PlayClipAtPoint(AudioClip clip, Vector2 pos, float volume)
+	{
+		if (!clip)
+			return;
+
+		AudioSource.PlayClipAtPoint(clip, Vector3.zero, volume);
+	}
+
 	void Update()
 	{
 		UpdateInput();
+
+		footstepCooldown -= Time.deltaTime;
 	}
 
 	void FixedUpdate()
@@ -140,6 +169,7 @@ public class Game : MonoBehaviour
 				var muzzleFlash = Instantiate(muzzleFlashPrefab, player.gunOrigin.position, weaponDir) as GameObject;
 				muzzleFlash.transform.parent = player.graphics.transform;
 				DetachAndDestroyAfter(muzzleFlash.transform, 0.1f);
+				PlayClipAtPoint(shootClip, player.gunOrigin.position, 1.0f);
 			}
 			else
 			{
@@ -158,6 +188,7 @@ public class Game : MonoBehaviour
 		{
 			// impulse
 			rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
+			PlayClipAtPoint(jumpClip, rigidBody.transform.position, 1.0f);
 		}
 
 		Vector2 dir = rigidBody.velocity.normalized;
@@ -182,6 +213,11 @@ public class Game : MonoBehaviour
 			{
 				//debugString = "walk";
 				animator.Play("PlayerWalk");
+				if (footstepCooldown <= 0.0f)
+				{
+					footstepCooldown = 0.2f;
+					AudioSource.PlayClipAtPoint(footstepClip, Vector2.zero, 0.2f);
+				}
 			}
 			else
 			{
