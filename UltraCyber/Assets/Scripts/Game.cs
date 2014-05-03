@@ -157,6 +157,8 @@ public class Game : MonoBehaviour
 
 	void UpdateInput()
 	{
+		debugString = "";
+
 		for (uint i = 0; i < players.Length; ++i)
 		{
 			Player player = players[(int)i];
@@ -164,6 +166,14 @@ public class Game : MonoBehaviour
 			player.input.jump = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.A) || Input.GetKeyDown(KeyCode.Space);
 			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKeyDown(KeyCode.X);
 			player.input.aimDirection = new Vector2(player.input.horizontal, GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
+		
+			foreach (object btn in System.Enum.GetValues(typeof(GameInput.Xbox360Button)))
+			{
+				if (GameInput.GetXboxButton(i, (GameInput.Xbox360Button)btn))
+				{
+					debugString += i + " - " + System.Enum.GetName(typeof(GameInput.Xbox360Button), btn) + "\n";
+				}
+			}
 		}
 	}
 
@@ -256,7 +266,6 @@ public class Game : MonoBehaviour
 		player.input.horizontal = 0;
 		player.input.jump = false;
 		player.input.shoot = false;
-		debugString = "" + rigidBody.velocity;
 
 		float maxSpeed = config.maxSpeed;
 
