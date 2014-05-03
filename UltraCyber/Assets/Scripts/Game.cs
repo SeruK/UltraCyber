@@ -16,11 +16,11 @@ public class Game : MonoBehaviour
 	public EffectSpawner effectSpawner;
 	
 	[System.Serializable]
-	class CustomAudioClip
+	public class CustomAudioClip
 	{
 		public AudioClip clip;
-		public float volume;
-		public float pitch;
+		public float volume = 1.0f;
+		public float pitch = 1.0f;
 	}
 
 	// temp
@@ -31,11 +31,11 @@ public class Game : MonoBehaviour
 	public GameObject muzzleFlashPrefab;
 
 	// TODO move this somewhere
-	public AudioClip spawnClip;
-	public AudioClip shootClip;
-	public AudioClip impactClip;
-	public AudioClip footstepClip;
-	public AudioClip jumpClip;
+	public CustomAudioClip spawnClip;
+	public CustomAudioClip shootClip;
+	public CustomAudioClip impactClip;
+	public CustomAudioClip footstepClip;
+	public CustomAudioClip jumpClip;
 
 	public Config config;
 
@@ -120,12 +120,20 @@ public class Game : MonoBehaviour
 		return new Vector2(1,2.015f);// Vector2.zero;
 	}
 
-	void PlayClipAtPoint(AudioClip clip, Vector2 pos, float volume)
+	void PlayClipAtPoint(CustomAudioClip clip, Vector2 pos, float volume)
 	{
-		if (!clip)
+		if (!clip.clip)
 			return;
 
-		AudioSource.PlayClipAtPoint(clip, Vector3.zero, volume);
+		GameObject go = new GameObject(clip.clip.name);
+
+		AudioSource audio = go.AddComponent<AudioSource>();
+
+		audio.volume = clip.volume;
+		audio.pitch = clip.pitch;
+		audio.PlayOneShot(clip.clip);
+
+		//AudioSource.PlayClipAtPoint(clip.clip, Vector3.zero, volume);
 	}
 
 	void Update()
@@ -172,7 +180,7 @@ public class Game : MonoBehaviour
 		{
 			Player player = players[(int)i];
 			player.input.horizontal = DirKeyHeld() ? GetKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
-			player.input.jump = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.A) || Input.GetKeyDown(KeyCode.Space);
+			player.input.jump = GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || Input.GetKey(KeyCode.Space);
 			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKeyDown(KeyCode.X);
 			player.input.aimDirection = new Vector2(player.input.horizontal, 
 			                                        VertDirKeysHeld() ? GetVertKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
