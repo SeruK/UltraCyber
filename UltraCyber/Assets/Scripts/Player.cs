@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Player : MonoBehaviour
@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
 
 	public float movementForce;
 	public float jumpForce;
+	public float jumpDeceleration;
+	public float currentJumpForce;
 
 	public uint shotsLeft;
 

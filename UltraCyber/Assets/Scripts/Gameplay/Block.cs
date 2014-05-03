@@ -27,8 +27,8 @@ public class Block : MonoBehaviour {
 
 
 	public void Destroy() {
-		gameObject.SetActive(false);
-		EffectSpawner.Instance.SpawnExplosion(transform.position);
+		//gameObject.SetActive(false);
+		//EffectSpawner.Instance.SpawnExplosion(transform.position);
 	}
 
 

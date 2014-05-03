@@ -3,6 +3,15 @@ using System.Collections;
 
 public class Game : MonoBehaviour
 {
+	public enum MoneyBagHolder
+	{
+		None,
+		PlayerOne,
+		PlayerTwo
+	}
+
+	public MoneyBagHolder moneyBagHolder;
+
 	[SerializeField]
 	public EffectSpawner effectSpawner;
 	
@@ -101,6 +110,7 @@ public class Game : MonoBehaviour
 
 		player.movementForce = config.playerMovementForce;
 		player.jumpForce = config.playerJumpForce;
+		player.jumpDeceleration = config.playerJumpDeceleration;
 		player.transform.position = FindSpawnPoint();
 		player.shotsLeft = (uint)config.shots;
 	}
@@ -192,8 +202,15 @@ public class Game : MonoBehaviour
 		if (player.input.jump && player.onGround)
 		{
 			// impulse
-			rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
+			//rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
+			player.currentJumpForce = player.jumpForce;
 			PlayClipAtPoint(jumpClip, rigidBody.transform.position, 1.0f);
+		}
+
+		if (player.currentJumpForce > 0.0f)
+		{
+			rigidBody.AddForce(Vector2.up * (player.currentJumpForce * Time.deltaTime));
+			player.currentJumpForce -= player.jumpDeceleration * Time.deltaTime;
 		}
 
 		Vector2 dir = rigidBody.velocity.normalized;
@@ -221,7 +238,7 @@ public class Game : MonoBehaviour
 				if (footstepCooldown <= 0.0f)
 				{
 					footstepCooldown = 0.2f;
-					AudioSource.PlayClipAtPoint(footstepClip, Vector2.zero, 0.2f);
+					PlayClipAtPoint(footstepClip, Vector2.zero, 0.2f);
 				}
 			}
 			else
