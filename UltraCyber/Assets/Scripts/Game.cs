@@ -44,6 +44,11 @@ public class Game : MonoBehaviour
 
 	public Config config;
 
+	public SpriteRenderer playerOneWinsIndicator;
+	public SpriteRenderer playerTwoWinsIndicator;
+	public SpriteRenderer drawIndicator;
+	public SpriteRenderer startToPlayIndicator;
+
 	public Player[] players;
 
 	public Camera camera;
@@ -113,6 +118,13 @@ public class Game : MonoBehaviour
 			Destroy (data);
 		RemovePlayers();
 
+		playerOneWinsIndicator.enabled = false;
+		playerTwoWinsIndicator.enabled = false;
+		drawIndicator.enabled = false;
+		startToPlayIndicator.enabled = false;
+
+		gameEnd = false;
+
 		dataHolder = DataHolder.None;
 
 		mapLoader.Recreate();
@@ -129,15 +141,10 @@ public class Game : MonoBehaviour
 
 			player.gameObject.layer = i == 0 ? 8 : 13;
 
-			Vector2 spawnPoint;
-			if (FindSpawnPoint(out spawnPoint))
-			{
-				RespawnPlayer(player, spawnPoint);
-			}
-			else
-			{
-				Debug.LogError("COULD NOT FIND SPAWN POINT FOR PLAYER" + i);
-			}
+
+
+			Vector2 spawnPoint = i == 0 ? new Vector2(1, 2.015f) : new Vector2(9, 2.015f);
+			RespawnPlayer(player, spawnPoint);
 
 		}
 
@@ -181,16 +188,58 @@ public class Game : MonoBehaviour
 		player.graphics.GetComponent<SpriteRenderer>().enabled = true;
 	}
 
-	bool FindSpawnPoint(out Vector2 spawnPoint)
+	bool FindSpawnPoint(out Vector2 spawnPoint, int offset)
 	{
+		int camY = Mathf.CeilToInt(camera.transform.position.y + offset);
+
+		while (true)
+		{
+			if (camY >= config.mapHeight)
+			{
+				--camY;
+				continue;
+			}
+
+			if (camY < 0)
+				break;
+
+			var list = mapLoader.GetRow(camY);
+			var lowestList = camY == 0 ? null : mapLoader.GetRow(camY - 1);
+			for (int x = 0; x < list.Count; ++x)
+			{
+				bool superCont = false;
+				foreach (Player playaaa in players)
+				{
+					if (Mathf.FloorToInt(playaaa.transform.position.x) == x &&
+					    Mathf.FloorToInt(playaaa.transform.position.y) == camY)
+					{
+						superCont = true;
+						break;
+					}
+				}
+
+				if (superCont)
+					continue;
+
+				MapLoaderTurbo.BlockType bt = list[x];
+				MapLoaderTurbo.BlockType btLower = lowestList == null ? MapLoaderTurbo.BlockType.Filled : lowestList[x];
+				if (bt == MapLoaderTurbo.BlockType.Empty && btLower == MapLoaderTurbo.BlockType.Filled)
+				{
+					spawnPoint = new Vector2(-1.0f + (float)x, camY);
+					return true;
+				}
+			}
+
+			--camY;
+		}
+
 		spawnPoint = new Vector2(1, 2.015f);
-		return true;// Vector2.zero;
+		return false;// Vector2.zero;
 	}
 
 	bool FindDataSpawnPoint(out Vector2 spawnPoint)
 	{
-		spawnPoint = new Vector2(3, 5.015f);
-		return true;
+		return FindSpawnPoint(out spawnPoint, 6);
 	}
 
 	void KillPlayer(Player player)
@@ -203,6 +252,7 @@ public class Game : MonoBehaviour
 				{
 					dataHolder = DataHolder.None;
 					PlayClip(dataDropClip);
+					break;
 				}
 			}
 		}
@@ -236,12 +286,24 @@ public class Game : MonoBehaviour
 
 	void Update()
 	{
-#if UNITY_EDITOR
+		if (gameEnd)
+		{
+			for (uint i = 0; i < 2; ++i)
+			{
+				if (GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.Start))
+				{
+					Restart ();
+				}
+			}
+			return;
+		}
+
 		if (Input.GetKeyDown(KeyCode.R))
 		{
 			Restart();
 			return;
 		}
+#if UNITY_EDITOR
 		else if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			KillPlayer(players[0]);
@@ -264,7 +326,7 @@ public class Game : MonoBehaviour
 				continue;
 
 			Vector2 spawnPoint;
-			if (FindSpawnPoint(out spawnPoint))
+			if (FindSpawnPoint(out spawnPoint, 4))
 			{
 				RespawnPlayer(p, spawnPoint);
 			}
@@ -279,15 +341,18 @@ public class Game : MonoBehaviour
 				debugString = "Get the data!";
 			else
 				debugString = "";
+			players[1].diskIndicator.enabled = players[0].diskIndicator.enabled = false;
 			break;
 
 		case DataHolder.PlayerOne:
 			players[0].score += config.pointsPerSecond * Time.deltaTime;
+			players[0].diskIndicator.enabled = true;
 			debugString = "P1 has the data! Score: " + ((int)players[0].score).ToString();
 			break;
 
 		case DataHolder.PlayerTwo:
 			players[1].score += config.pointsPerSecond * Time.deltaTime;
+			players[1].diskIndicator.enabled = true;
 			debugString = "P2 has the data! Score: " + ((int)players[1].score).ToString();
 			break;
 
@@ -299,10 +364,45 @@ public class Game : MonoBehaviour
 
 	void FixedUpdate()
 	{
+		if (gameEnd)
+		{
+			return;
+		}
+
 		camera.transform.position += new Vector3(0.0f, config.cameraPanSpeed * Time.deltaTime, 0.0f);
+
+		float maxY = 0;
+
+		foreach (Player p in players)
+		{
+			if (p.transform.position.y > maxY)
+				maxY = p.transform.position.y;
+		}
+
+		if (maxY > camera.transform.position.y)
+		{
+			camera.transform.position += new Vector3(0.0f, config.cameraPanSpeed * 3.0f * Time.deltaTime, 0.0f);
+		}
+
+		camera.transform.position = new Vector3(camera.transform.position.x,
+		                                        Mathf.Clamp(camera.transform.position.y, config.cameraStartY, config.cameraEndY),
+		                                        camera.transform.position.z);
+
 
 		for (int i = 0; i < players.Length; ++i)
 		{
+			var p = players[i];
+
+			if (p.transform.position.y < camera.transform.position.y - 6)
+			{
+				KillPlayer(p);
+			}
+			else if (p.transform.position.y >= mapLoader.hoverCraft.transform.position.y)
+			{
+				EndGame();
+				break;
+			}
+
 			UpdatePlayer(players[i]);
 		}
 	}
@@ -324,6 +424,46 @@ public class Game : MonoBehaviour
 
 	private int GetVertKeyDir() {
 		return Input.GetKey(KeyCode.UpArrow) ? 1 : -1;
+	}
+
+	bool gameEnd = false;
+
+	void EndGame()
+	{
+		if (gameEnd)
+			return;
+
+		gameEnd = true;
+
+		for (int i = 0; i < players.Length; ++i)
+		{
+			KillPlayer(players[i]);
+		}
+
+		int p1 = Mathf.FloorToInt(players[0].score);
+		int p2 = Mathf.FloorToInt(players[1].score);
+
+		startToPlayIndicator.enabled = true;
+
+		if (p1 == p2)
+		{
+			debugString = "Draw! Everyone's a winner! Start to play again";
+			Debug.Log("DRAW!!!!");
+
+			drawIndicator.enabled = true;
+		}
+		else if (p1 > p2)
+		{
+			playerOneWinsIndicator.enabled = false;
+			debugString = "Player one wins! Start to play again";
+			Debug.Log("P1 WINS!!!!");
+		}
+		else
+		{
+			playerTwoWinsIndicator.enabled = false;
+			debugString = "Player two wins! Start to play again";
+			Debug.Log("P2 WINS!!!!");
+		}
 	}
 
 	void UpdateInput()
@@ -350,28 +490,34 @@ public class Game : MonoBehaviour
 		if (player.dead)
 			return;
 
-		if (player.input.shoot)
+		if (player.weaponCooldown > 0.0f)
+		{
+			player.weaponCooldown -= Time.deltaTime;
+		}
+
+		if (player.input.shoot && player.weaponCooldown <= 0.0f)
 		{
 			var dirr = GetWeaponDirection(player);
 			float angle = Mathf.Atan2(dirr.y, dirr.x) * Mathf.Rad2Deg;
 			var weaponDir = Quaternion.AngleAxis(angle, Vector3.forward);
+			player.weaponCooldown = config.weaponCooldown;
 
-			if (player.shotsLeft > 1u)
-			{
-				--player.shotsLeft;
+			/*if (player.shotsLeft > 1u)
+			{*/
+				//--player.shotsLeft;
 				ShootBullet(player);
 				var muzzleFlash = Instantiate(muzzleFlashPrefab, player.gunOrigin.position, weaponDir) as GameObject;
 				muzzleFlash.transform.parent = player.graphics.transform;
 				DetachAndDestroyAfter(muzzleFlash.transform, 0.1f);
 				PlayClipAtPoint(shootClip, player.gunOrigin.position, 1.0f);
-			}
+			/*}
 			else
 			{
 				var noBullet = Instantiate(noBulletPrefab, player.gunOrigin.position, weaponDir) as GameObject;
 				noBullet.transform.parent = player.graphics.transform;
 				DetachAndDestroyAfter(noBullet.transform, 0.2f);
 				PlayClip(clickClip);
-			}
+			}*/
 		}
 
 		var rigidBody = player.GetComponent<Rigidbody2D>();

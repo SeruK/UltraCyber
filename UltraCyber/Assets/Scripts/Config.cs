@@ -22,5 +22,7 @@ public class Config : MonoBehaviour
 	public int mapWidth = 11;
 	public int mapHeight = 600;
 
+	public float weaponCooldown = 0.2f;
+
 	public Color[] playerColors = {};
 }

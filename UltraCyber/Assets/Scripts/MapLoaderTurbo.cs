@@ -24,6 +24,9 @@ public class MapLoaderTurbo : MonoBehaviour
 	public GameObject LeftWall;
 	public GameObject RightWall;
 	public GameObject BackdropPrefab;
+	public GameObject HoverCraftPrefab;
+
+	public GameObject hoverCraft;
 
 	[SerializeField]
 	private List<GameObject> BackGroundTiles;
@@ -91,6 +94,11 @@ public class MapLoaderTurbo : MonoBehaviour
 	{
 		Clear();
 
+		if (hoverCraft == null)
+		{
+			hoverCraft = Instantiate(HoverCraftPrefab, new Vector2(config.mapWidth / 2 - 1, config.mapHeight), Quaternion.identity) as GameObject;
+		}
+
 		if (SideTiles != null && SideTiles.Count <= 0)
 		{
 			SideTiles = new List<GameObject>();
@@ -135,6 +143,13 @@ public class MapLoaderTurbo : MonoBehaviour
 					typesList.Add(BlockType.Filled);
 				}
 			}
+			else if (y == config.mapHeight - 1)
+			{
+				for (int x = 0; x < config.mapWidth; ++x)
+				{
+					typesList.Add(BlockType.Filled);
+				}
+			}
 			else if (y % 2 == 1)
 			{
 				for (int x = 0; x < config.mapWidth; ++x)
@@ -151,6 +166,11 @@ public class MapLoaderTurbo : MonoBehaviour
 			CreateBlockRow(y, typesList);
 			blockTypes.Add(typesList);
 		}
+	}
+
+	public List<BlockType> GetRow(int y)
+	{
+		return blockTypes[y];
 	}
 
 	List<BlockType> ReadBlockRow(Texture2D tex)
