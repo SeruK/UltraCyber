@@ -60,11 +60,11 @@ public class MapLoader : MonoBehaviour {
 	public void TestSpawn() {
 
 		float startY = 0;
-		GameObject startBlock = CreateBlockRow(StartBlock);
+		GameObject startBlock = CreateBlockRow(StartBlock, "ronka");
 		startBlock.transform.position = new Vector2(0,startY);
 		startBlock.transform.parent = transform; //get outta here.
 
-		while(startY < 200) {
+		while(startY < 400) {
 
 			for(int bgX=0;bgX<11;++bgX) {
 
@@ -98,31 +98,34 @@ public class MapLoader : MonoBehaviour {
 		}
 	}
 
-	public GameObject CreateBlockRow(Texture2D blockRowImage) {
+	public GameObject CreateBlockRow(Texture2D blockRowImage, string name="ROW") {
 
-		BlockRow newRow = new GameObject("ROW").AddComponent<BlockRow>();
+		BlockRow newRow = new GameObject(name).AddComponent<BlockRow>();
 
+		int inRow = 0;
+		Vector2 startPos = Vector2.zero;
 
 		for(int x=0;x<blockRowImage.width;++x)
 		{
 			Vector2 bajs = new Vector2(x, 0);
 			Color color = blockRowImage.GetPixel(x,0);
 
-			int inRow = 0;
-
-
 			if(color == Color.green) {
+
+				if(inRow == 0)
+					startPos = bajs;
+
 				++inRow;
+
 			GameObject greenie = GameObject.Instantiate(GreenBlock) as GameObject;
 			greenie.transform.localPosition = bajs;
 			newRow.AddBlock(greenie.GetComponentInChildren<Block>());
 			}					
-//			else if(color == Color.blue) 
-//			{
-//			
-//			}					
 			else if(color == Color.red) 
 			{
+				if(inRow == 0)
+					startPos = bajs;
+
 				++inRow;
 				GameObject reddie = GameObject.Instantiate(RedBlock) as GameObject;
 				reddie.transform.localPosition = bajs;
@@ -130,10 +133,33 @@ public class MapLoader : MonoBehaviour {
 			}
 			else {
 
+				if(inRow > 0) {
+					BlockRow subRow = new GameObject("SUBROW").AddComponent<BlockRow>();
+					subRow.transform.parent = newRow.transform;
+					BoxCollider2D boxCollider = subRow.gameObject.AddComponent<BoxCollider2D>();
+					subRow.gameObject.AddComponent<Rigidbody2D>();
+					boxCollider.center = startPos + new Vector2((inRow * 0.5f) - 0.5f,0.35f);
+					boxCollider.size = new Vector2(inRow,0.3f);
+					boxCollider.attachedRigidbody.isKinematic = true;
+					//Helper.CreateDebugSphere(startPos + new Vector2(inRow * 0.5f,0), Color.blue);
+				}
+				inRow = 0;
 				//build collider.
 			}
 //			else if(color == Color.black) 
 //			{
+
+			//H IH IHIHIHIHAHHAAXXX
+			if(x == blockRowImage.width-1 && inRow > 0) {
+				BlockRow subRow = new GameObject("SUBROW").AddComponent<BlockRow>();
+				subRow.transform.parent = newRow.transform;
+				BoxCollider2D boxCollider = subRow.gameObject.AddComponent<BoxCollider2D>();
+				subRow.gameObject.AddComponent<Rigidbody2D>();
+				boxCollider.center = startPos + new Vector2((inRow * 0.5f) - 0.5f,0.35f);
+				boxCollider.size = new Vector2(inRow,0.3f);
+				boxCollider.attachedRigidbody.isKinematic = true;
+				//Helper.CreateDebugSphere(startPos + new Vector2(inRow * 0.5f,0), Color.blue);
+			} //bajs orkar klockan e maassa 
 //					
 //			}
 		}
