@@ -42,6 +42,7 @@ public class EffectSpawner : AutoDestroy {
 	}
 
 	public GameObject ExplosionEffect;
+	public GameObject BulletImpactEffect;
 
 
 
@@ -55,6 +56,13 @@ public class EffectSpawner : AutoDestroy {
 		GameObject animator = GameObject.Instantiate(ExplosionEffect) as GameObject;
 		animator.transform.position = position;
 		animator.GetComponent<Animator>().Play("ExplosionIdle");
+		animator.gameObject.AddComponent<AutoDestroy>().Init (0.2f);
+	}
+
+	public void SpawnBulletImpact(Vector2 position) {
+		GameObject animator = GameObject.Instantiate(BulletImpactEffect) as GameObject;
+		animator.transform.position = position;
+		animator.GetComponent<Animator>().Play("BulletImpact");
 		animator.gameObject.AddComponent<AutoDestroy>().Init (0.2f);
 	}
 

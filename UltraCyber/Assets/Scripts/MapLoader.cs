@@ -15,6 +15,8 @@ public class MapData {
 public class MapLoader : MonoBehaviour {
 
 
+	//MAKE SINGLETON AND ABLE TO MAKE AAAALLL BE NONKINEMATIC; VERRY CFUNNNSY!
+
 	private int width = 11; //put in config.. ffs.
 
 	private List<GameObject> rowBlocks = new List<GameObject>();
@@ -103,6 +105,7 @@ public class MapLoader : MonoBehaviour {
 		BlockRow newRow = new GameObject(name).AddComponent<BlockRow>();
 
 		int inRow = 0;
+		List<Block> connectedBlocks = new List<Block>();
 		Vector2 startPos = Vector2.zero;
 
 		for(int x=0;x<blockRowImage.width;++x)
@@ -119,7 +122,9 @@ public class MapLoader : MonoBehaviour {
 
 			GameObject greenie = GameObject.Instantiate(GreenBlock) as GameObject;
 			greenie.transform.localPosition = bajs;
-			newRow.AddBlock(greenie.GetComponentInChildren<Block>());
+			connectedBlocks.Add(newRow.AddBlock(greenie.GetComponentInChildren<Block>()));
+			connectedBlocks[connectedBlocks.Count-1].haxIndex= x;
+			
 			}					
 			else if(color == Color.red) 
 			{
@@ -127,9 +132,11 @@ public class MapLoader : MonoBehaviour {
 					startPos = bajs;
 
 				++inRow;
+
 				GameObject reddie = GameObject.Instantiate(RedBlock) as GameObject;
 				reddie.transform.localPosition = bajs;
-				newRow.AddBlock(reddie.GetComponentInChildren<Block>());
+				connectedBlocks.Add(newRow.AddBlock(reddie.GetComponentInChildren<Block>()));
+				connectedBlocks[connectedBlocks.Count-1].haxIndex= x;
 			}
 			else {
 
@@ -141,9 +148,15 @@ public class MapLoader : MonoBehaviour {
 					boxCollider.center = startPos + new Vector2((inRow * 0.5f) - 0.5f,0.35f);
 					boxCollider.size = new Vector2(inRow,0.3f);
 					boxCollider.attachedRigidbody.isKinematic = true;
+
+					BlockCounter counter = subRow.gameObject.AddComponent<BlockCounter>();
+					counter.AddConnectedBlocks(connectedBlocks);
+					counter.connectedBlocks[connectedBlocks.Count-1].haxIndex= x;
 					//Helper.CreateDebugSphere(startPos + new Vector2(inRow * 0.5f,0), Color.blue);
 				}
+			
 				inRow = 0;
+				connectedBlocks.Clear ();
 				//build collider.
 			}
 //			else if(color == Color.black) 
@@ -158,6 +171,10 @@ public class MapLoader : MonoBehaviour {
 				boxCollider.center = startPos + new Vector2((inRow * 0.5f) - 0.5f,0.35f);
 				boxCollider.size = new Vector2(inRow,0.3f);
 				boxCollider.attachedRigidbody.isKinematic = true;
+
+				BlockCounter counter = subRow.gameObject.AddComponent<BlockCounter>();
+				counter.AddConnectedBlocks(connectedBlocks);
+				counter.connectedBlocks[connectedBlocks.Count-1].haxIndex= x;
 				//Helper.CreateDebugSphere(startPos + new Vector2(inRow * 0.5f,0), Color.blue);
 			} //bajs orkar klockan e maassa 
 //					
