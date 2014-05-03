@@ -312,8 +312,9 @@ public class Game : MonoBehaviour
 #endif
 
 		footstepCooldown -= Time.deltaTime;
-		if (Input.GetKeyUp(KeyCode.A)) 
-			effectSpawner.SpawnExplosion(new Vector2(1,1));
+		//if (Input.GetKeyUp(KeyCode.A)) 
+			//CameraShaker.Instance.Shake();
+			//effectSpawner.SpawnExplosion(new Vector2(1,1));
 
 		if (dataHolder == DataHolder.None && !data)
 		{
@@ -627,6 +628,7 @@ public class Game : MonoBehaviour
 			{
 				playa.rigidbody2D.AddForce(coll.relativeVelocity.normalized * (config.bulletImpactForce / Time.deltaTime));
 				PlayClip(impactPlayerClip);
+				CameraShaker.Instance.Shake();
 			}
 			else
 			{
@@ -639,6 +641,9 @@ public class Game : MonoBehaviour
 		rigid.AddForce(dir * (config.bulletForce / Time.deltaTime) + player.GetComponent<Rigidbody2D>().velocity);
 		bulletGo.GetComponent<CollisionEventSender>().CollisionEnter2D += BulletImpact;
 		DestroyAfter(bulletGo, config.bulletLife);
+
+
+		player.rigidbody2D.AddForce(-dir * (config.bulletForce / Time.deltaTime));
 	}
 
 	Vector2 GetWeaponDirection(Player player)
