@@ -3,6 +3,15 @@ using System.Collections;
 
 public class Game : MonoBehaviour
 {
+	public enum MoneyBagHolder
+	{
+		None,
+		PlayerOne,
+		PlayerTwo
+	}
+
+	public MoneyBagHolder moneyBagHolder;
+
 	[SerializeField]
 	public EffectSpawner effectSpawner;
 	
@@ -101,6 +110,7 @@ public class Game : MonoBehaviour
 
 		player.movementForce = config.playerMovementForce;
 		player.jumpForce = config.playerJumpForce;
+		player.jumpDeceleration = config.playerJumpDeceleration;
 		player.transform.position = FindSpawnPoint();
 		player.shotsLeft = (uint)config.shots;
 	}
@@ -138,6 +148,11 @@ public class Game : MonoBehaviour
 	private bool DirKeyHeld() {
 		return Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow);
 	}
+
+	private bool VertDirKeysHeld() {
+		return Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow);
+	}
+
 	private int GetKeyDir(){
 		if (Input.GetKey(KeyCode.LeftArrow))
 			return -1;
@@ -145,15 +160,30 @@ public class Game : MonoBehaviour
 			return 1;
 	}
 
+	private int GetVertKeyDir() {
+		return Input.GetKey(KeyCode.UpArrow) ? 1 : -1;
+	}
+
 	void UpdateInput()
 	{
+		debugString = "heyo";
+
 		for (uint i = 0; i < players.Length; ++i)
 		{
 			Player player = players[(int)i];
 			player.input.horizontal = DirKeyHeld() ? GetKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
 			player.input.jump = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.A) || Input.GetKeyDown(KeyCode.Space);
 			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKeyDown(KeyCode.X);
-			player.input.aimDirection = new Vector2(player.input.horizontal, GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
+			player.input.aimDirection = new Vector2(player.input.horizontal, 
+			                                        VertDirKeysHeld() ? GetVertKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
+		
+			foreach (object btn in System.Enum.GetValues(typeof(GameInput.Xbox360Button)))
+			{
+				if (GameInput.GetXboxButton(i, (GameInput.Xbox360Button)btn))
+				{
+					debugString += i + " - " + System.Enum.GetName(typeof(GameInput.Xbox360Button), btn) + "\n";
+				}
+			}
 		}
 	}
 
@@ -192,8 +222,15 @@ public class Game : MonoBehaviour
 		if (player.input.jump && player.onGround)
 		{
 			// impulse
-			rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
+			//rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
+			player.currentJumpForce = player.jumpForce;
 			PlayClipAtPoint(jumpClip, rigidBody.transform.position, 1.0f);
+		}
+
+		if (player.currentJumpForce > 0.0f)
+		{
+			rigidBody.AddForce(Vector2.up * (player.currentJumpForce * Time.deltaTime));
+			player.currentJumpForce -= player.jumpDeceleration * Time.deltaTime;
 		}
 
 		Vector2 dir = rigidBody.velocity.normalized;
@@ -221,7 +258,7 @@ public class Game : MonoBehaviour
 				if (footstepCooldown <= 0.0f)
 				{
 					footstepCooldown = 0.2f;
-					AudioSource.PlayClipAtPoint(footstepClip, Vector2.zero, 0.2f);
+					PlayClipAtPoint(footstepClip, Vector2.zero, 0.2f);
 				}
 			}
 			else
@@ -239,7 +276,6 @@ public class Game : MonoBehaviour
 		player.input.horizontal = 0;
 		player.input.jump = false;
 		player.input.shoot = false;
-		debugString = "" + rigidBody.velocity;
 
 		float maxSpeed = config.maxSpeed;
 
