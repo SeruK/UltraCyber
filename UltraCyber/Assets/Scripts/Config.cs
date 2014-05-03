@@ -18,4 +18,7 @@ public class Config : MonoBehaviour
 	public float cameraPanSpeed;
 	public float cameraStartY;
 	public float cameraEndY;
+
+	public int mapWidth = 11;
+	public int mapHeight = 600;
 }

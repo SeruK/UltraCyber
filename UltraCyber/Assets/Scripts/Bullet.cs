@@ -9,7 +9,12 @@ public class Bullet : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D collision) {
 
-		Debug.Log("HEJ!!");
+		/*BlockTurbo turb = collision.gameObject.GetComponent<BlockTurbo>();
+
+		if (turb)
+		{
+			turb.KillMe();
+		}*/
 		EffectSpawner.Instance.SpawnBulletImpact(transform.position);
 		GameObject.Destroy(gameObject);
 	}

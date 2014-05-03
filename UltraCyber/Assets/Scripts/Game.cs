@@ -3,14 +3,14 @@ using System.Collections;
 
 public class Game : MonoBehaviour
 {
-	public enum MoneyBagHolder
+	public enum DataHolder
 	{
 		None,
 		PlayerOne,
 		PlayerTwo
 	}
 
-	public MoneyBagHolder moneyBagHolder;
+	public DataHolder dataHolder;
 
 	[SerializeField]
 	public EffectSpawner effectSpawner;
@@ -29,6 +29,7 @@ public class Game : MonoBehaviour
 	public GameObject bulletPrefab;
 	public GameObject noBulletPrefab;
 	public GameObject muzzleFlashPrefab;
+	public GameObject dataPrefab;
 
 	// TODO move this somewhere
 	public CustomAudioClip spawnClip;
@@ -36,6 +37,9 @@ public class Game : MonoBehaviour
 	public CustomAudioClip impactClip;
 	public CustomAudioClip footstepClip;
 	public CustomAudioClip jumpClip;
+	public CustomAudioClip clickClip;
+	public CustomAudioClip dataClip;
+	public CustomAudioClip dataDropClip;
 
 	public Config config;
 
@@ -43,7 +47,10 @@ public class Game : MonoBehaviour
 
 	public Camera camera;
 
+	public MapLoaderTurbo mapLoader;
+
 	private float footstepCooldown;
+	private GameObject data;
 
 	void OnEnable()
 	{
@@ -52,7 +59,10 @@ public class Game : MonoBehaviour
 
 	void OnDisable()
 	{
+		if (data)
+			Destroy (data);
 		RemovePlayers();
+		mapLoader.Clear();
 	}
 
 	void DetachAndDestroyAfter(Component obj, float delay)
@@ -98,7 +108,13 @@ public class Game : MonoBehaviour
 
 	void Restart()
 	{
+		if (data)
+			Destroy (data);
 		RemovePlayers();
+
+		dataHolder = DataHolder.None;
+
+		mapLoader.Recreate();
 
 		int numPlayers = 1;
 		
@@ -108,8 +124,17 @@ public class Game : MonoBehaviour
 		{
 			Player player = InstantiatePlayer("Player " + i);
 			players[i] = player;
-			
-			RespawnPlayer(player, FindSpawnPoint());
+
+			Vector2 spawnPoint;
+			if (FindSpawnPoint(out spawnPoint))
+			{
+				RespawnPlayer(player, spawnPoint);
+			}
+			else
+			{
+				Debug.LogError("COULD NOT FIND SPAWN POINT FOR PLAYER" + i);
+			}
+
 		}
 
 		camera.transform.position = new Vector3(camera.transform.position.x, config.cameraStartY, camera.transform.position.z);
@@ -125,6 +150,20 @@ public class Game : MonoBehaviour
 		return player;
 	}
 
+	void TryInstantiateData()
+	{
+		if (data)
+			return;
+
+		Vector2 spawnPoint;
+		if (FindDataSpawnPoint(out spawnPoint))
+		{
+			data = Instantiate(dataPrefab, spawnPoint, Quaternion.identity) as GameObject;
+			var eventSender = data.GetComponent<CollisionEventSender>();
+			eventSender.TriggerEnter2D += DataImpact;
+		}
+	}
+
 	void RespawnPlayer(Player player, Vector2 position)
 	{
 		PlayClipAtPoint(spawnClip, position, 1.0f);
@@ -132,13 +171,45 @@ public class Game : MonoBehaviour
 		player.movementForce = config.playerMovementForce;
 		player.jumpForce = config.playerJumpForce;
 		player.jumpDeceleration = config.playerJumpDeceleration;
-		player.transform.position = FindSpawnPoint();
+		player.transform.position = position;
 		player.shotsLeft = (uint)config.shots;
+		player.dead = false;
+		player.graphics.GetComponent<SpriteRenderer>().enabled = true;
 	}
 
-	Vector2 FindSpawnPoint()
+	bool FindSpawnPoint(out Vector2 spawnPoint)
 	{
-		return new Vector2(1,2.015f);// Vector2.zero;
+		spawnPoint = new Vector2(1, 2.015f);
+		return true;// Vector2.zero;
+	}
+
+	bool FindDataSpawnPoint(out Vector2 spawnPoint)
+	{
+		spawnPoint = new Vector2(3, 5.015f);
+		return true;
+	}
+
+	void KillPlayer(Player player)
+	{
+		for (int i = 0; i < players.Length; ++i)
+		{
+			if (players[i] == player)
+			{
+				if (dataHolder == (DataHolder)(i + 1))
+				{
+					dataHolder = DataHolder.None;
+					PlayClip(dataDropClip);
+				}
+			}
+		}
+
+		player.dead = true;
+		player.graphics.GetComponent<SpriteRenderer>().enabled = false;
+	}
+
+	void PlayClip(CustomAudioClip clip)
+	{
+		PlayClipAtPoint(clip, Vector2.zero, 1.0f);
 	}
 
 	void PlayClipAtPoint(CustomAudioClip clip, Vector2 pos, float volume)
@@ -154,16 +225,70 @@ public class Game : MonoBehaviour
 		audio.pitch = clip.pitch;
 		audio.PlayOneShot(clip.clip);
 
+		DestroyAfter(go, clip.clip.length + 0.1f);
+
 		//AudioSource.PlayClipAtPoint(clip.clip, Vector3.zero, volume);
 	}
 
 	void Update()
 	{
+#if UNITY_EDITOR
+		if (Input.GetKeyDown(KeyCode.R))
+		{
+			Restart();
+			return;
+		}
+		else if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			KillPlayer(players[0]);
+			return;
+		}
+#endif
+
 		footstepCooldown -= Time.deltaTime;
 		if (Input.GetKeyUp(KeyCode.A)) 
 			effectSpawner.SpawnExplosion(new Vector2(1,1));
-			
+
+		if (dataHolder == DataHolder.None && !data)
+		{
+			TryInstantiateData();
+		}
+
+		foreach (Player p in players)
+		{
+			if (!p.dead)
+				continue;
+
+			Vector2 spawnPoint;
+			if (FindSpawnPoint(out spawnPoint))
+			{
+				RespawnPlayer(p, spawnPoint);
+			}
+		}
+
 		UpdateInput();
+
+		switch (dataHolder)
+		{
+		case DataHolder.None:
+			if (data)
+				debugString = "Get the data!";
+			else
+				debugString = "";
+			break;
+
+		case DataHolder.PlayerOne:
+			debugString = "Player one has the data!";
+			break;
+
+		case DataHolder.PlayerTwo:
+			debugString = "Player two has the data!";
+			break;
+
+		default:
+			Debug.LogError("derp");
+			break;
+		}
 	}
 
 	void FixedUpdate()
@@ -197,24 +322,18 @@ public class Game : MonoBehaviour
 
 	void UpdateInput()
 	{
-		debugString = "heyo";
-
 		for (uint i = 0; i < players.Length; ++i)
 		{
 			Player player = players[(int)i];
+
+			if (player.dead)
+				continue;
+
 			player.input.horizontal = DirKeyHeld() ? GetKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
 			player.input.jump = GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || Input.GetKey(KeyCode.Space);
 			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKeyDown(KeyCode.X);
 			player.input.aimDirection = new Vector2(player.input.horizontal, 
 			                                        VertDirKeysHeld() ? GetVertKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
-		
-			foreach (object btn in System.Enum.GetValues(typeof(GameInput.Xbox360Button)))
-			{
-				if (GameInput.GetXboxButton(i, (GameInput.Xbox360Button)btn))
-				{
-					debugString += i + " - " + System.Enum.GetName(typeof(GameInput.Xbox360Button), btn) + "\n";
-				}
-			}
 		}
 	}
 
@@ -222,6 +341,9 @@ public class Game : MonoBehaviour
 
 	void UpdatePlayer(Player player)
 	{
+		if (player.dead)
+			return;
+
 		if (player.input.shoot)
 		{
 			var dirr = GetWeaponDirection(player);
@@ -242,6 +364,7 @@ public class Game : MonoBehaviour
 				var noBullet = Instantiate(noBulletPrefab, player.gunOrigin.position, weaponDir) as GameObject;
 				noBullet.transform.parent = player.graphics.transform;
 				DetachAndDestroyAfter(noBullet.transform, 0.2f);
+				PlayClip(clickClip);
 			}
 		}
 
@@ -367,10 +490,38 @@ public class Game : MonoBehaviour
 		Destroy(sender.gameObject);
 	}
 
+	void DataImpact(CollisionEventSender sender, Collider2D other)
+	{
+		Player p = other.GetComponent<Player>();
+
+		if (!p)
+			return;
+
+		for (int i = 0; i < players.Length; ++i)
+		{
+			if (p == players[i])
+			{
+				dataHolder = (DataHolder)(i + 1);
+				PlayClip(dataClip);
+				Destroy(data);
+				break;
+			}
+		}
+	}
+
 	void OnGUI()
 	{
 		GUI.skin = debugGUISkin;
 		GUILayout.Label(string.IsNullOrEmpty(debugString) ? "HERRO WROLD" : debugString);
+
+		if (players != null)
+		{
+			if (players.Length > 0)
+				GUI.Label(new Rect(10.0f, Screen.height - 50.0f, Screen.width, 40.0f), "" + players[0].score);
+			if (players.Length > 1)
+				GUI.Label(new Rect(Screen.width - 210.0f, Screen.height - 50.0f, 200.0f, 40.0f), "" + players[1].score);
+		} 
+
 		GUI.skin = null;
 	}
 }

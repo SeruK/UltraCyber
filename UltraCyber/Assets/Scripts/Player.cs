@@ -26,6 +26,8 @@ public class Player : MonoBehaviour
 	public float jumpDeceleration;
 	public float currentJumpForce;
 
+	public float score;
+
 	public uint shotsLeft;
 
 	void OnEnable()
@@ -50,14 +52,8 @@ public class Player : MonoBehaviour
 
 	}
 
-	// returns the world position of the wielded gun
-	public Vector2 gunPosition
-	{
-		get {
-			return transform.position;
-		}
-	}
-
+	public bool dead = false;
+	
 	public bool onGround {
 
 		get {
