@@ -12,9 +12,18 @@ public class Block : MonoBehaviour {
 	public BlockType blockType;
 
 
-	void OnCollisionEnter(Collision collision)
+	void OnCollisionEnter2D(Collision2D collider)
 	{
-		//dostuff
+
+		if(transform.position.y > collider.transform.position.y)
+		Destroy ();
+	}
+
+
+
+	public void Destroy() {
+		gameObject.SetActive(false);
+		EffectSpawner.Instance.SpawnExplosion(transform.position);
 	}
 
 
