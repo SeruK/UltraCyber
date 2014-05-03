@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
 	}
 
 	public GameObject graphics;
+	public Transform gunOrigin;
 
 	public PlayerInput input = new PlayerInput();
 
@@ -23,7 +24,7 @@ public class Player : MonoBehaviour
 	public float jumpForce;
 
 	public uint shotsLeft;
-	
+
 	void OnEnable()
 	{
 		Player me = this;

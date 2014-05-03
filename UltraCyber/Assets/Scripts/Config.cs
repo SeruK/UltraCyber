@@ -9,4 +9,8 @@ public class Config : MonoBehaviour
 	public float maxSpeed = 10.0f;
 
 	public int shots = 6;
+
+	public float bulletForce;
+	public float bulletLife;
+	public float bulletImpactForce;
 }
