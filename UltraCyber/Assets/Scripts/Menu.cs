@@ -4,11 +4,17 @@ using System.Collections;
 public class Menu : MonoBehaviour {
 
 	public AudioClip voice;
+	public AudioClip explosionClip;
 	public AudioSource musicSource;
 	public float voiceWait;
 
+	public Animator explosionAnim;
+	public SpriteRenderer explosion;
+	public SpriteRenderer logo;
+
 	void OnEnable()
 	{
+		logo.enabled = explosion.enabled = false;
 		StartCoroutine(PlayVoice());
 	}
 
@@ -16,7 +22,11 @@ public class Menu : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(voiceWait);
 		AudioSource.PlayClipAtPoint(voice, Vector3.zero);
+		logo.enabled = true;
 		yield return new WaitForSeconds(voice.length);
+		AudioSource.PlayClipAtPoint(explosionClip, Vector3.zero);
+		explosion.enabled = true;
+		explosionAnim.Play("TitleAnim");
 		musicSource.Play();
 	}
 
