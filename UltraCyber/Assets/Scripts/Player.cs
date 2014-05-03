@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
+	[System.Serializable]
 	public class PlayerInput
 	{
 		public bool jump;

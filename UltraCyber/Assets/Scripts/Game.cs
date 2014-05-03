@@ -148,6 +148,11 @@ public class Game : MonoBehaviour
 	private bool DirKeyHeld() {
 		return Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow);
 	}
+
+	private bool VertDirKeysHeld() {
+		return Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow);
+	}
+
 	private int GetKeyDir(){
 		if (Input.GetKey(KeyCode.LeftArrow))
 			return -1;
@@ -155,9 +160,13 @@ public class Game : MonoBehaviour
 			return 1;
 	}
 
+	private int GetVertKeyDir() {
+		return Input.GetKey(KeyCode.UpArrow) ? 1 : -1;
+	}
+
 	void UpdateInput()
 	{
-		debugString = "";
+		debugString = "heyo";
 
 		for (uint i = 0; i < players.Length; ++i)
 		{
@@ -165,7 +174,8 @@ public class Game : MonoBehaviour
 			player.input.horizontal = DirKeyHeld() ? GetKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
 			player.input.jump = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.A) || Input.GetKeyDown(KeyCode.Space);
 			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKeyDown(KeyCode.X);
-			player.input.aimDirection = new Vector2(player.input.horizontal, GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
+			player.input.aimDirection = new Vector2(player.input.horizontal, 
+			                                        VertDirKeysHeld() ? GetVertKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
 		
 			foreach (object btn in System.Enum.GetValues(typeof(GameInput.Xbox360Button)))
 			{
