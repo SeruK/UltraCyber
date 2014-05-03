@@ -278,11 +278,13 @@ public class Game : MonoBehaviour
 			break;
 
 		case DataHolder.PlayerOne:
-			debugString = "Player one has the data!";
+			players[0].score += config.pointsPerSecond * Time.deltaTime;
+			debugString = "P1 has the data! Score: " + ((int)players[0].score).ToString();
 			break;
 
 		case DataHolder.PlayerTwo:
-			debugString = "Player two has the data!";
+			players[1].score += config.pointsPerSecond * Time.deltaTime;
+			debugString = "P2 has the data! Score: " + ((int)players[1].score).ToString();
 			break;
 
 		default:
@@ -514,13 +516,13 @@ public class Game : MonoBehaviour
 		GUI.skin = debugGUISkin;
 		GUILayout.Label(string.IsNullOrEmpty(debugString) ? "HERRO WROLD" : debugString);
 
-		if (players != null)
-		{
-			if (players.Length > 0)
-				GUI.Label(new Rect(10.0f, Screen.height - 50.0f, Screen.width, 40.0f), "" + players[0].score);
-			if (players.Length > 1)
-				GUI.Label(new Rect(Screen.width - 210.0f, Screen.height - 50.0f, 200.0f, 40.0f), "" + players[1].score);
-		} 
+//		if (players != null)
+//		{
+//			if (players.Length > 0)
+//				GUI.Label(new Rect(10.0f, Screen.height - 50.0f, Screen.width, 40.0f), "" + players[0].score);
+//			if (players.Length > 1)
+//				GUI.Label(new Rect(Screen.width - 210.0f, Screen.height - 50.0f, 200.0f, 40.0f), "" + players[1].score);
+//		} 
 
 		GUI.skin = null;
 	}
