@@ -3,11 +3,23 @@ using System.Collections;
 
 public class Menu : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
+	public AudioClip voice;
+	public AudioSource musicSource;
+	public float voiceWait;
+
+	void OnEnable()
+	{
+		StartCoroutine(PlayVoice());
 	}
-	
+
+	IEnumerator PlayVoice()
+	{
+		yield return new WaitForSeconds(voiceWait);
+		AudioSource.PlayClipAtPoint(voice, Vector3.zero);
+		yield return new WaitForSeconds(voice.length);
+		musicSource.Play();
+	}
+
 	// Update is called once per frame
 	void Update () {
 

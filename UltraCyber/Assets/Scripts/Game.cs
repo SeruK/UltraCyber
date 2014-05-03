@@ -30,6 +30,7 @@ public class Game : MonoBehaviour
 	public GameObject noBulletPrefab;
 	public GameObject muzzleFlashPrefab;
 	public GameObject dataPrefab;
+	public GameObject textPrefab;
 
 	// TODO move this somewhere
 	public CustomAudioClip spawnClip;
@@ -138,10 +139,10 @@ public class Game : MonoBehaviour
 			Player player = InstantiatePlayer("Player " + i);
 			players[i] = player;
 			player.tint = config.playerColors[i];
+			player.dataCooldown = 0.0f;
+			player.lastScoreInt = 0;
 
 			player.gameObject.layer = i == 0 ? 8 : 13;
-
-
 
 			Vector2 spawnPoint = i == 0 ? new Vector2(1, 2.015f) : new Vector2(9, 2.015f);
 			RespawnPlayer(player, spawnPoint);
@@ -169,10 +170,18 @@ public class Game : MonoBehaviour
 		Vector2 spawnPoint;
 		if (FindDataSpawnPoint(out spawnPoint))
 		{
-			data = Instantiate(dataPrefab, spawnPoint, Quaternion.identity) as GameObject;
-			var eventSender = data.GetComponent<CollisionEventSender>();
-			eventSender.TriggerEnter2D += DataImpact;
+			InstantiateData(spawnPoint);
 		}
+	}
+
+	void InstantiateData(Vector2 spawnPoint)
+	{
+		if (data)
+			return;
+
+		data = Instantiate(dataPrefab, spawnPoint, Quaternion.identity) as GameObject;
+		var eventSender = data.GetComponent<CollisionEventSender>();
+		eventSender.TriggerEnter2D += DataImpact;
 	}
 
 	void RespawnPlayer(Player player, Vector2 position)
@@ -185,7 +194,7 @@ public class Game : MonoBehaviour
 		player.transform.position = position;
 		player.shotsLeft = (uint)config.shots;
 		player.dead = false;
-		player.graphics.GetComponent<SpriteRenderer>().enabled = true;
+		player.gunRenderer.enabled = player.bodyRenderer.enabled = true;
 	}
 
 	bool FindSpawnPoint(out Vector2 spawnPoint, int offset)
@@ -258,7 +267,8 @@ public class Game : MonoBehaviour
 		}
 
 		player.dead = true;
-		player.graphics.GetComponent<SpriteRenderer>().enabled = false;
+		player.gunRenderer.enabled = false;
+		player.bodyRenderer.enabled = false;
 	}
 
 	void PlayClip(CustomAudioClip clip)
@@ -346,12 +356,24 @@ public class Game : MonoBehaviour
 
 		case DataHolder.PlayerOne:
 			players[0].score += config.pointsPerSecond * Time.deltaTime;
+			int floored = Mathf.FloorToInt(players[0].score);
+			if (floored != players[0].lastScoreInt)
+			{
+				players[0].lastScoreInt = floored;
+				SpawnTextAt("+" + floored, (Vector2)players[0].transform.position + new Vector2(0.7f, 1.2f));
+			}
 			players[0].diskIndicator.enabled = true;
 			debugString = "P1 has the data! Score: " + ((int)players[0].score).ToString();
 			break;
 
 		case DataHolder.PlayerTwo:
 			players[1].score += config.pointsPerSecond * Time.deltaTime;
+			floored = Mathf.FloorToInt(players[1].score);
+			if (floored != players[1].lastScoreInt)
+			{
+				players[1].lastScoreInt = floored;
+				SpawnTextAt("+" + floored, (Vector2)players[1].transform.position + new Vector2(0.7f, 1.2f));
+			}
 			players[1].diskIndicator.enabled = true;
 			debugString = "P2 has the data! Score: " + ((int)players[1].score).ToString();
 			break;
@@ -360,6 +382,29 @@ public class Game : MonoBehaviour
 			Debug.LogError("derp");
 			break;
 		}
+	}
+
+	void SpawnTextAt(string text, Vector2 pos)
+	{
+		var textGo = Instantiate(textPrefab, pos, Quaternion.identity) as GameObject;
+		var txt = textGo.GetComponent<TextMesh>();
+		txt.text = text;
+		StartCoroutine(_fadeOutText(txt));
+	}
+
+	IEnumerator _fadeOutText(TextMesh textMesh)
+	{
+		float max = (1.0f / config.pointsPerSecond) * 0.9f;
+		float t = max;
+		while (t > 0.0f)
+		{
+			yield return null;
+			t -= Time.deltaTime;
+			var c = textMesh.color;
+			c.a = t / max;
+			//textMesh.transform.localScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), new Vector3(0.01f, 0.01f, 0.01f), (t / max));
+		}
+		Destroy(textMesh.gameObject);
 	}
 
 	void FixedUpdate()
@@ -454,13 +499,13 @@ public class Game : MonoBehaviour
 		}
 		else if (p1 > p2)
 		{
-			playerOneWinsIndicator.enabled = false;
+			playerOneWinsIndicator.enabled = true;
 			debugString = "Player one wins! Start to play again";
 			Debug.Log("P1 WINS!!!!");
 		}
 		else
 		{
-			playerTwoWinsIndicator.enabled = false;
+			playerTwoWinsIndicator.enabled = true;
 			debugString = "Player two wins! Start to play again";
 			Debug.Log("P2 WINS!!!!");
 		}
@@ -489,6 +534,11 @@ public class Game : MonoBehaviour
 	{
 		if (player.dead)
 			return;
+
+		if (player.dataCooldown > 0.0f)
+		{
+			player.dataCooldown -= Time.deltaTime;
+		}
 
 		if (player.weaponCooldown > 0.0f)
 		{
@@ -627,6 +677,15 @@ public class Game : MonoBehaviour
 			{
 				playa.rigidbody2D.AddForce(coll.relativeVelocity.normalized * (config.bulletImpactForce / Time.deltaTime));
 				PlayClip(impactPlayerClip);
+				for (int i = 0; i < players.Length; ++i)
+				{
+					if (players[i] == playa && dataHolder == (DataHolder)(i + 1))
+					{
+						dataHolder = DataHolder.None;
+						playa.dataCooldown = config.diskCooldown;
+						InstantiateData((Vector2)playa.transform.position + new Vector2(0.0f, 0.5f));
+					}
+				}
 			}
 			else
 			{
@@ -678,7 +737,7 @@ public class Game : MonoBehaviour
 
 		for (int i = 0; i < players.Length; ++i)
 		{
-			if (p == players[i])
+			if (p == players[i] && p.dataCooldown <= 0.0f)
 			{
 				dataHolder = (DataHolder)(i + 1);
 				PlayClip(dataClip);

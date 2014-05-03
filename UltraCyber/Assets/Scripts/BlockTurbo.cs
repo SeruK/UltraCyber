@@ -19,6 +19,6 @@ public class BlockTurbo : MonoBehaviour
 	public void OnTriggerEnter2D(Collider2D coll)
 	{
 		if (coll.gameObject.layer == 12 || coll.gameObject.layer == 11)
-			Invoke("KillMe", 0.1f);
+			Invoke("KillMe", 0.001f);
 	}
 }

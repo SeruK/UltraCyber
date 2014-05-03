@@ -27,17 +27,20 @@ public class Player : MonoBehaviour
 	public float currentJumpForce;
 
 	public float score;
+	public int lastScoreInt;
 
 	public float weaponCooldown;
 
 	public uint shotsLeft;
 
 	[SerializeField]
-	private SpriteRenderer bodyRenderer;
+	public SpriteRenderer bodyRenderer;
 	[SerializeField]
-	private SpriteRenderer gunRenderer;
+	public SpriteRenderer gunRenderer;
 
 	public SpriteRenderer diskIndicator;
+
+	public float dataCooldown;
 
 	public Color tint {
 

@@ -23,6 +23,7 @@ public class Config : MonoBehaviour
 	public int mapHeight = 600;
 
 	public float weaponCooldown = 0.2f;
+	public float diskCooldown = 2.0f;
 
 	public Color[] playerColors = {};
 }
