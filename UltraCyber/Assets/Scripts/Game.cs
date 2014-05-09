@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Game : MonoBehaviour
@@ -44,6 +44,7 @@ public class Game : MonoBehaviour
 	public CustomAudioClip dataDropClip;
 	public CustomAudioClip winClip;
 	public CustomAudioClip ultraCyberClip;
+	public CustomAudioClip dieClip;
 
 	public Config config;
 
@@ -60,6 +61,8 @@ public class Game : MonoBehaviour
 
 	private float footstepCooldown;
 	private GameObject data;
+
+	float gameEndWait;
 
 	void OnEnable()
 	{
@@ -146,9 +149,8 @@ public class Game : MonoBehaviour
 
 			player.gameObject.layer = i == 0 ? 8 : 13;
 
-			Vector2 spawnPoint = i == 0 ? new Vector2(1, 2.015f) : new Vector2(9, 2.015f);
+			Vector2 spawnPoint = i == 0 ? new Vector2(-1, 1.015f) : new Vector2(9, 1.015f);
 			RespawnPlayer(player, spawnPoint);
-
 		}
 
 		camera.transform.position = new Vector3(camera.transform.position.x, config.cameraStartY, camera.transform.position.z);
@@ -270,11 +272,14 @@ public class Game : MonoBehaviour
 					break;
 				}
 			}
+
+			PlayClip(dieClip);
 		}
 
 		player.dead = true;
 		player.gunRenderer.enabled = false;
 		player.bodyRenderer.enabled = false;
+		player.diskIndicator.enabled = false;
 	}
 
 	void PlayClip(CustomAudioClip clip)
@@ -304,11 +309,19 @@ public class Game : MonoBehaviour
 	{
 		if (gameEnd)
 		{
-			for (uint i = 0; i < 2; ++i)
+			if (gameEndWait > 0.0f)
+				gameEndWait -= Time.deltaTime;
+
+			if (gameEndWait <= 0.0f)
 			{
-				if (GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.Start))
+				for (uint i = 0; i < 2; ++i)
 				{
-					Restart ();
+					if (GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.Start) ||
+					    Input.anyKeyDown)
+					{
+						Restart ();
+						break;
+					}
 				}
 			}
 			return;
@@ -358,36 +371,37 @@ public class Game : MonoBehaviour
 				debugString = "Get the data!";
 			else
 				debugString = "";
-			players[1].diskIndicator.enabled = players[0].diskIndicator.enabled = false;
+			foreach (Player p in players)
+			{
+				p.diskIndicator.enabled = false;
+			}
 			break;
 
 		case DataHolder.PlayerOne:
-			players[0].score += config.pointsPerSecond * Time.deltaTime;
-			int floored = Mathf.FloorToInt(players[0].score);
-			if (floored != players[0].lastScoreInt)
-			{
-				players[0].lastScoreInt = floored;
-				SpawnTextAt("+" + floored, (Vector2)players[0].transform.position + new Vector2(0.7f, 1.2f), config.playerColors[0]);
-			}
-			players[0].diskIndicator.enabled = true;
-			debugString = "P1 has the data! Score: " + ((int)players[0].score).ToString();
-			break;
-
 		case DataHolder.PlayerTwo:
-			players[1].score += config.pointsPerSecond * Time.deltaTime;
-			floored = Mathf.FloorToInt(players[1].score);
-			if (floored != players[1].lastScoreInt)
-			{
-				players[1].lastScoreInt = floored;
-				SpawnTextAt("+" + floored, (Vector2)players[1].transform.position + new Vector2(0.7f, 1.2f), config.playerColors[1]);
-			}
-			players[1].diskIndicator.enabled = true;
-			debugString = "P2 has the data! Score: " + ((int)players[1].score).ToString();
+			uint playerIndex = (uint)dataHolder - 1u;
+			Player player = players[playerIndex];
+
+			AddScore(playerIndex, config.pointsPerSecond * Time.deltaTime); 
+			player.diskIndicator.enabled = true;
+			debugString = "P" + (playerIndex + 1u) + " has the data!";
 			break;
 
 		default:
 			Debug.LogError("derp");
 			break;
+		}
+	}
+
+	void AddScore(uint playerIndex, float score)
+	{
+		var player = players[playerIndex];
+		player.score += score;
+		int floored = Mathf.FloorToInt(player.score);
+		if (floored != player.lastScoreInt)
+		{
+			player.lastScoreInt = floored;
+			SpawnTextAt("+" + floored, (Vector2)player.transform.position + new Vector2(0.7f, 1.2f), config.playerColors[playerIndex]);
 		}
 	}
 
@@ -452,6 +466,7 @@ public class Game : MonoBehaviour
 			}
 			else if (p.transform.position.y >= mapLoader.hoverCraft.transform.position.y)
 			{
+				AddScore((uint)i, config.diskHolderEndBonus); 
 				EndGame();
 				break;
 			}
@@ -460,23 +475,30 @@ public class Game : MonoBehaviour
 		}
 	}
 
-	private bool DirKeyHeld() {
-		return Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow);
+	private bool DirKeyHeld(uint player) {
+		return player == 0 ?
+			(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) :
+				(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow));
 	}
 
-	private bool VertDirKeysHeld() {
-		return Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow);
+	private bool VertDirKeysHeld(uint player)
+	{
+		return player == 0 ?
+			(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) :
+				(Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow));
 	}
 
-	private int GetKeyDir(){
-		if (Input.GetKey(KeyCode.LeftArrow))
-			return -1;
-		else
-			return 1;
+	private int GetKeyDir(uint player)
+	{
+		return player == 0 ?
+			(Input.GetKey(KeyCode.A) ? -1 : 1) :
+				(Input.GetKey(KeyCode.LeftArrow) ? -1 : 1);
 	}
 
-	private int GetVertKeyDir() {
-		return Input.GetKey(KeyCode.UpArrow) ? 1 : -1;
+	private int GetVertKeyDir(uint player) {
+		return player == 0 ? 
+			(Input.GetKey(KeyCode.W) ? 1 : -1) :
+				(Input.GetKey(KeyCode.UpArrow) ? 1 : -1);
 	}
 
 	bool gameEnd = false;
@@ -487,6 +509,7 @@ public class Game : MonoBehaviour
 			return;
 
 		gameEnd = true;
+		gameEndWait = 1.0f;
 
 		for (int i = 0; i < players.Length; ++i)
 		{
@@ -541,11 +564,11 @@ public class Game : MonoBehaviour
 			if (player.dead)
 				continue;
 
-			player.input.horizontal = DirKeyHeld() ? GetKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
-			player.input.jump = GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || Input.GetKey(KeyCode.Space);
-			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKeyDown(KeyCode.X);
+			player.input.horizontal = DirKeyHeld(i) ? GetKeyDir(i) : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
+			player.input.jump = GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || Input.GetKey(i == 0 ? KeyCode.F : KeyCode.K);
+			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKey(i == 0 ? KeyCode.G : KeyCode.L);
 			player.input.aimDirection = new Vector2(player.input.horizontal, 
-			                                        VertDirKeysHeld() ? GetVertKeyDir() : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
+			                                        VertDirKeysHeld(i) ? GetVertKeyDir(i) : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
 		}
 	}
 
@@ -556,27 +579,30 @@ public class Game : MonoBehaviour
 		if (player.dead)
 			return;
 
-		if (player.dataCooldown > 0.0f)
+		Color tint = Color.white;
+
+		for (int i = 0; i < players.Length; ++i)
 		{
-			player.dataCooldown -= Time.deltaTime;
+			if (players[i] == player)
+			{
+				tint = config.playerColors[i];
+				break;
+			}
 		}
 
 		if (player.weaponCooldown > 0.0f)
 		{
 			player.weaponCooldown -= Time.deltaTime;
-			player.tint = new Color(255, 125, 125);
+			tint = new Color(255, 125, 125);
 		}
-		else
+
+		if (player.dataCooldown > 0.0f)
 		{
-			for (int i = 0; i < players.Length; ++i)
-			{
-				if (players[i] == player)
-				{
-					player.tint = config.playerColors[i];
-					break;
-				}
-			}
+			player.dataCooldown -= Time.deltaTime;
+			tint = Color.Lerp(tint, new Color(255, 0, 0), Mathf.PingPong(Time.time * 2.0f, 1.0f));
 		}
+
+		player.tint = tint;
 
 		if (player.input.shoot && player.weaponCooldown <= 0.0f)
 		{
@@ -608,12 +634,19 @@ public class Game : MonoBehaviour
 
 		rigidBody.AddForce(Vector2.right * (((float)player.input.horizontal) * player.movementForce * Time.deltaTime));
 
-		if (player.input.jump && player.onGround)
+		if (player.input.jump)
 		{
 			// impulse
 			//rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
-			player.currentJumpForce = player.jumpForce;
-			PlayClipAtPoint(jumpClip, rigidBody.transform.position, 1.0f);
+			if (player.onGround && player.currentJumpForce <= 0.0f)
+			{
+				player.currentJumpForce = player.jumpForce;
+				PlayClipAtPoint(jumpClip, rigidBody.transform.position, 1.0f);
+			}
+		}
+		else
+		{
+			player.currentJumpForce = 0.0f;
 		}
 
 		if (player.currentJumpForce > 0.0f)
@@ -706,7 +739,7 @@ public class Game : MonoBehaviour
 		}
 
 		bullet.onHit += (Bullet bull, Collision2D coll) => {
-			var playa = coll.gameObject.GetComponent<Player>();
+			var playa = coll != null ? coll.gameObject.GetComponent<Player>() : null;
 			if (playa)
 			{
 				for (int i = 0; i < players.Length; ++i)
@@ -794,13 +827,23 @@ public class Game : MonoBehaviour
 		GUI.skin = debugGUISkin;
 		GUILayout.Label(string.IsNullOrEmpty(debugString) ? "HERRO WROLD" : debugString);
 
-//		if (players != null)
-//		{
-//			if (players.Length > 0)
-//				GUI.Label(new Rect(10.0f, Screen.height - 50.0f, Screen.width, 40.0f), "" + players[0].score);
-//			if (players.Length > 1)
-//				GUI.Label(new Rect(Screen.width - 210.0f, Screen.height - 50.0f, 200.0f, 40.0f), "" + players[1].score);
-//		} 
+		if (players != null)
+		{
+			var ali = GUI.skin.label.alignment;
+
+			GUI.skin.label.alignment = TextAnchor.LowerLeft;
+
+			GUI.color = config.playerColors[0];
+			if (players.Length > 0)
+				GUI.Label(new Rect(10.0f, Screen.height - 50.0f, Screen.width, 40.0f), "" + Mathf.FloorToInt(players[0].score));
+			GUI.color = config.playerColors[1];
+
+			GUI.skin.label.alignment = TextAnchor.LowerRight;
+			if (players.Length > 1)
+				GUI.Label(new Rect(Screen.width - 210.0f, Screen.height - 50.0f, 200.0f, 40.0f), "" + Mathf.FloorToInt(players[1].score));
+			GUI.skin.label.alignment = ali;
+			GUI.color = Color.white;
+		} 
 
 		GUI.skin = null;
 	}

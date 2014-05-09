@@ -106,8 +106,20 @@ public class MapLoaderTurbo : MonoBehaviour
 			for (int y = 1; y < config.mapHeight; ++y)
 			{
 				var bl = Instantiate(LeftWall) as GameObject;
+				if (y == 1)
+				{
+					var coll = bl.AddComponent<BoxCollider2D>();
+					coll.center = new Vector2(0, config.mapHeight / 2.0f);
+					coll.size = new Vector2(1.0f, config.mapHeight);
+				}
 				bl.transform.position = new Vector2(-2.0f, y);
 				bl = Instantiate(RightWall) as GameObject;
+				if (y == 1)
+				{
+					var coll = bl.AddComponent<BoxCollider2D>();
+					coll.center = new Vector2(0, config.mapHeight / 2.0f);
+					coll.size = new Vector2(1.0f, config.mapHeight);
+				}
 				bl.transform.position = new Vector2(config.mapWidth - 1, y);
 			}
 		}
@@ -147,7 +159,12 @@ public class MapLoaderTurbo : MonoBehaviour
 			{
 				for (int x = 0; x < config.mapWidth; ++x)
 				{
-					typesList.Add(BlockType.Filled);
+					var bt = BlockType.Filled;
+					if (config.mapWidth > 3 && (x >= 3 && x <= config.mapWidth - 4))
+					{
+						bt = BlockType.Empty;
+					}
+					typesList.Add(bt);
 				}
 			}
 			else if (y % 2 == 1)

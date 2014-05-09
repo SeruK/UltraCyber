@@ -59,15 +59,18 @@ public class Player : MonoBehaviour
 		Player me = this;
 
 		groundEventSender.TriggerEnter2D += (CollisionEventSender in_trigger, Collider2D in_other) => {
-			me._onGround = true;
+			if (in_other.gameObject.layer == 9)
+				me._onGround = true;
 		};
 
 		groundEventSender.TriggerStay2D += (CollisionEventSender in_trigger, Collider2D in_other) => {
-			me._onGround = true;
+			if (in_other.gameObject.layer == 9)
+				me._onGround = true;
 		};
 
 		groundEventSender.TriggerExit2D += (CollisionEventSender in_trigger, Collider2D in_other) => {
-			me._onGround = false;
+			if (in_other.gameObject.layer == 9)
+				me._onGround = false;
 		};
 	}
 

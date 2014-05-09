@@ -12,8 +12,11 @@ public class Menu : MonoBehaviour {
 	public SpriteRenderer explosion;
 	public SpriteRenderer logo;
 
+	bool finishedIntro;
+
 	void OnEnable()
 	{
+		finishedIntro = false;
 		logo.enabled = explosion.enabled = false;
 		StartCoroutine(PlayVoice());
 	}
@@ -31,15 +34,23 @@ public class Menu : MonoBehaviour {
 		explosion.enabled = true;
 		explosionAnim.Play("TitleAnim");
 		musicSource.Play();
+		finishedIntro = true;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		if (shake)
 			CameraShaker.Instance.Shake();
+
+		if (!finishedIntro)
+			return;
+
 		for (uint i = 0; i < 2; ++i)
 		{
-			if (Input.GetKeyDown(KeyCode.Space) || GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B)) {
+			if (Input.anyKeyDown || 
+			    GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || 
+			    GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) ||
+			    GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.Start)) {
 				Application.LoadLevel(1);
 			}
 

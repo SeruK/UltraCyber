@@ -9,6 +9,7 @@ public class Config : MonoBehaviour
 
 	public float maxSpeed = 10.0f;
 	public float pointsPerSecond = 2.0f;
+	public float diskHolderEndBonus = 2.0f;
 	public int shots = 6;
 
 	public float bulletForce;

@@ -2,9 +2,19 @@
 
 public static class GameInput
 {
-#if UNITY_STANDALONE_OSX
-
-#else
+//#if UNITY_STANDALONE_OSX
+//	public enum Xbox360Button
+//	{
+//		A = 16,
+//		B = 17,
+//		X = 18,
+//		Y = 19,
+//		LB = 4,
+//		RB = 5,
+//		Back = 10,
+//		Start = 9
+//	}
+//#else
 	public enum Xbox360Button
 	{
 		A = 0,
@@ -16,7 +26,7 @@ public static class GameInput
 		Back = 6,
 		Start = 7
 	}
-#endif
+//#endif
 
 	public enum Xbox360Axis
 	{
