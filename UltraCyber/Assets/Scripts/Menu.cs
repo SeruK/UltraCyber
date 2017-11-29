@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
+using UE = UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Menu : MonoBehaviour {
 
@@ -12,6 +15,8 @@ public class Menu : MonoBehaviour {
 	public SpriteRenderer explosion;
 	public SpriteRenderer logo;
 
+	public GameObject playButton;
+
 	bool finishedIntro;
 
 	void OnEnable()
@@ -19,7 +24,9 @@ public class Menu : MonoBehaviour {
 		finishedIntro = false;
 		logo.enabled = explosion.enabled = false;
 		StartCoroutine(PlayVoice());
-	}
+
+		SelectPlayButton();
+    }
 
 	bool shake = false;
 
@@ -45,16 +52,31 @@ public class Menu : MonoBehaviour {
 		if (!finishedIntro)
 			return;
 
-		for (uint i = 0; i < 2; ++i)
+#if !USE_REWIRED
+		if(GameInput.GetAnyButtonDown())
 		{
-			if (Input.anyKeyDown || 
-			    GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || 
-			    GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) ||
-			    GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.Start)) {
-				Application.LoadLevel(1);
-			}
-
+			Application.LoadLevel(1);
 		}
-	
+#endif // !USE_REWIRED
+	}
+
+	void SelectPlayButton()
+	{
+		EventSystem.current.SetSelectedGameObject(playButton);
+    }
+
+	public void ToggleFullscreen()
+	{
+		Screen.fullScreen = !Screen.fullScreen;
+	}
+
+	public void LoadLevel()
+	{
+		Application.LoadLevel(1);
+	}
+
+	public void ExitGame()
+	{
+		Application.Quit();
 	}
 }

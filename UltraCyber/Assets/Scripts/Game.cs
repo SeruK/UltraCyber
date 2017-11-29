@@ -327,7 +327,13 @@ public class Game : MonoBehaviour
 			return;
 		}
 
-		if (Input.GetKeyDown(KeyCode.R))
+		if(GameInput.GetButton(0, GameInput.Button.ReturnMainMenu))
+		{
+			Application.LoadLevel(0);
+			return;
+		}
+
+		if (GameInput.GetButton(0, GameInput.Button.Restart))
 		{
 			Restart();
 			return;
@@ -475,32 +481,6 @@ public class Game : MonoBehaviour
 		}
 	}
 
-	private bool DirKeyHeld(uint player) {
-		return player == 0 ?
-			(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) :
-				(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow));
-	}
-
-	private bool VertDirKeysHeld(uint player)
-	{
-		return player == 0 ?
-			(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) :
-				(Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow));
-	}
-
-	private int GetKeyDir(uint player)
-	{
-		return player == 0 ?
-			(Input.GetKey(KeyCode.A) ? -1 : 1) :
-				(Input.GetKey(KeyCode.LeftArrow) ? -1 : 1);
-	}
-
-	private int GetVertKeyDir(uint player) {
-		return player == 0 ? 
-			(Input.GetKey(KeyCode.W) ? 1 : -1) :
-				(Input.GetKey(KeyCode.UpArrow) ? 1 : -1);
-	}
-
 	bool gameEnd = false;
 
 	void EndGame()
@@ -564,11 +544,10 @@ public class Game : MonoBehaviour
 			if (player.dead)
 				continue;
 
-			player.input.horizontal = DirKeyHeld(i) ? GetKeyDir(i) : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadX);
-			player.input.jump = GameInput.GetXboxButton(i, GameInput.Xbox360Button.A) || Input.GetKey(i == 0 ? KeyCode.F : KeyCode.K);
-			player.input.shoot = GameInput.GetXboxButtonDown(i, GameInput.Xbox360Button.B) || Input.GetKey(i == 0 ? KeyCode.G : KeyCode.L);
-			player.input.aimDirection = new Vector2(player.input.horizontal, 
-			                                        VertDirKeysHeld(i) ? GetVertKeyDir(i) : GameInput.GetXboxAxis(i, GameInput.Xbox360Axis.DpadY));
+			player.input.horizontal = GameInput.GetAxis(i, GameInput.Axis.MoveHorizontal);
+			player.input.jump = GameInput.GetButton(i, GameInput.Button.Jump);
+			player.input.shoot = GameInput.GetButtonDown(i, GameInput.Button.Shoot);
+			player.input.aimDirection = new Vector2(player.input.horizontal, GameInput.GetAxis(i, GameInput.Axis.AimVertical));
 		}
 	}
 
