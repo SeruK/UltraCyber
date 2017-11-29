@@ -10,8 +10,8 @@ public class RandomMusic : MonoBehaviour
 	{
 		if (clips != null && clips.Length > 0)
 		{
-			audio.clip = clips[Random.Range(0, clips.Length)];
-			audio.Play();
+			GetComponent<AudioSource>().clip = clips[Random.Range(0, clips.Length)];
+			GetComponent<AudioSource>().Play();
 	    }
 	}
 }

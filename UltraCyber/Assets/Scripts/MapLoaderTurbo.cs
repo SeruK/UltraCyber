@@ -109,7 +109,7 @@ public class MapLoaderTurbo : MonoBehaviour
 				if (y == 1)
 				{
 					var coll = bl.AddComponent<BoxCollider2D>();
-					coll.center = new Vector2(0, config.mapHeight / 2.0f);
+					coll.offset = new Vector2(0, config.mapHeight / 2.0f);
 					coll.size = new Vector2(1.0f, config.mapHeight);
 				}
 				bl.transform.position = new Vector2(-2.0f, y);
@@ -117,7 +117,7 @@ public class MapLoaderTurbo : MonoBehaviour
 				if (y == 1)
 				{
 					var coll = bl.AddComponent<BoxCollider2D>();
-					coll.center = new Vector2(0, config.mapHeight / 2.0f);
+					coll.offset = new Vector2(0, config.mapHeight / 2.0f);
 					coll.size = new Vector2(1.0f, config.mapHeight);
 				}
 				bl.transform.position = new Vector2(config.mapWidth - 1, y);
@@ -244,7 +244,7 @@ public class MapLoaderTurbo : MonoBehaviour
 				if (block)
 				{
 					collider = block.gameObject.AddComponent<BoxCollider2D>();
-					collider.center = new Vector2(0.0f, 0.25f);
+					collider.offset = new Vector2(0.0f, 0.25f);
 					collider.size = new Vector2(1.0f, 0.5f);
 				}
 			}
@@ -259,7 +259,7 @@ public class MapLoaderTurbo : MonoBehaviour
 				{
 					++w;
 					
-					collider.center = new Vector2(((float)w) * 0.5f, 0.25f);
+					collider.offset = new Vector2(((float)w) * 0.5f, 0.25f);
 					collider.size = new Vector2((float)(w + 1), 0.5f);
 				}
 			}

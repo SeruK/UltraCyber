@@ -31,7 +31,7 @@ public static class Helper
     {
         GameObject spherie = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         spherie.transform.localScale = Vector3.one * aScale;
-        spherie.renderer.material.color = aColor;
+        spherie.GetComponent<Renderer>().material.color = aColor;
         spherie.transform.position = aPos;
     }
 

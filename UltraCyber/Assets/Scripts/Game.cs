@@ -756,7 +756,7 @@ public class Game : MonoBehaviour
 					}
 				}
 
-				playa.rigidbody2D.AddForce(coll.relativeVelocity.normalized * (config.bulletImpactForce / Time.deltaTime));
+				playa.GetComponent<Rigidbody2D>().AddForce(coll.relativeVelocity.normalized * (config.bulletImpactForce / Time.deltaTime));
 				PlayClip(impactPlayerClip);
 				CameraShaker.Instance.Shake();
 			}
@@ -772,7 +772,7 @@ public class Game : MonoBehaviour
 		bulletGo.GetComponent<CollisionEventSender>().CollisionEnter2D += BulletImpact;
 		DestroyAfter(bulletGo, config.bulletLife);
 		
-		player.rigidbody2D.AddForce(-dir * (config.knockback / Time.deltaTime));
+		player.GetComponent<Rigidbody2D>().AddForce(-dir * (config.knockback / Time.deltaTime));
 	}
 
 	Vector2 GetWeaponDirection(Player player)
