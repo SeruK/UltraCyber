@@ -82,9 +82,9 @@ public class Game : MonoBehaviour
 	{
 		Restart();
 
-		p1score.text = "0000";
+		p1score.text = "P1:\n000";
 		p1score.color = config.playerColors[0];
-		p2score.text = "0000";
+		p2score.text = "P2:\n000";
 		p2score.color = config.playerColors[1];
 	}
 
@@ -174,9 +174,9 @@ public class Game : MonoBehaviour
 
 		camera.transform.position = new Vector3(camera.transform.position.x, config.cameraStartY, camera.transform.position.z);
 
-		var hoverAnim = mapLoader.hoverCraft.GetComponent<Animator>();
+		//var hoverAnim = mapLoader.hoverCraft.GetComponent<Animator>();
 		
-		hoverAnim.Play("HoverIdle");
+		//hoverAnim.Play("HoverIdle");
 	}
 
 	Player InstantiatePlayer(string name)
@@ -216,8 +216,8 @@ public class Game : MonoBehaviour
 		PlayClipAtPoint(spawnClip, position, 1.0f);
 
 		player.movementForce = config.playerMovementForce;
-		player.jumpForce = config.playerJumpForce;
-		player.jumpDeceleration = config.playerJumpDeceleration;
+		//player.jumpForce = config.playerJumpForce;
+		//player.jumpDeceleration = config.playerJumpDeceleration;
 		player.transform.position = position;
 		player.shotsLeft = (uint)config.shots;
 		player.dead = false;
@@ -417,8 +417,8 @@ public class Game : MonoBehaviour
 			break;
 		}
 
-		p1score.text = Mathf.FloorToInt(players[0].score).ToString().PadLeft(3, '0');
-		p2score.text = Mathf.FloorToInt(players[1].score).ToString().PadLeft(3, '0');
+		p1score.text = string.Format("P1:\n{0}", Mathf.FloorToInt(players[0].score).ToString().PadLeft(3, '0'));
+		p2score.text = string.Format("P2:\n{0}", Mathf.FloorToInt(players[1].score).ToString().PadLeft(3, '0'));
 	}
 
 	void AddScore(uint playerIndex, float score)
@@ -523,9 +523,9 @@ public class Game : MonoBehaviour
 
 		startToPlayIndicator.enabled = true;
 
-		var hoverAnim = mapLoader.hoverCraft.GetComponent<Animator>();
+		//var hoverAnim = mapLoader.hoverCraft.GetComponent<Animator>();
 
-		hoverAnim.Play("HoverFlyAway");
+		//hoverAnim.Play("HoverFlyAway");
 
 		if (p1 == p2)
 		{
@@ -635,28 +635,38 @@ public class Game : MonoBehaviour
 
 		rigidBody.AddForce(Vector2.right * (((float)player.input.horizontal) * player.movementForce * Time.deltaTime));
 
-		if (player.input.jump)
+		if(player.jumpGraceTimer > 0.0f)
 		{
-			// impulse
-			//rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
-			if (player.onGround && player.currentJumpForce <= 0.0f)
-			{
-				player.currentJumpForce = player.jumpForce;
-				PlayClipAtPoint(jumpClip, rigidBody.transform.position, 1.0f);
-			}
+			player.jumpGraceTimer -= Time.deltaTime;
 		}
-		else
+		else if(player.onGround && player.input.jump)
 		{
-			player.currentJumpForce = 0.0f;
-		}
+			player.rigid.AddForce(Vector2.up * config.playerJumpForce, ForceMode2D.Impulse);
+			player.jumpGraceTimer = config.playerJumpGraceTime;
+        }
 
-		if (player.currentJumpForce > 0.0f)
-		{
-			rigidBody.AddForce(Vector2.up * (player.currentJumpForce * Time.deltaTime));
-			player.currentJumpForce -= player.jumpDeceleration * Time.deltaTime;
-		}
+		//if (player.input.jump)
+		//{
+		//	// impulse
+		//	//rigidBody.AddForce(Vector2.up * (player.jumpForce / Time.deltaTime));
+		//	if (player.onGround && player.currentJumpForce <= 0.0f)
+		//	{
+		//		player.currentJumpForce = player.jumpForce;
+		//		PlayClipAtPoint(jumpClip, rigidBody.transform.position, 1.0f);
+		//	}
+		//}
+		//else
+		//{
+		//	player.currentJumpForce = 0.0f;
+		//}
 
-		Vector2 dir = rigidBody.velocity.normalized;
+			//if (player.currentJumpForce > 0.0f)
+			//{
+			//	rigidBody.AddForce(Vector2.up * (player.currentJumpForce * Time.deltaTime));
+			//	player.currentJumpForce -= player.jumpDeceleration * Time.deltaTime;
+			//}
+
+			Vector2 dir = rigidBody.velocity.normalized;
 		float dot = Vector2.Dot(dir, Vector3.down);
 
 		if (!player.onGround)
@@ -702,8 +712,15 @@ public class Game : MonoBehaviour
 
 		float maxSpeed = config.maxSpeed;
 
-		if (rigidBody.velocity.sqrMagnitude >= maxSpeed * maxSpeed)
-			rigidBody.velocity = rigidBody.velocity.normalized * maxSpeed;
+		Vector2 rigidVel = rigidBody.velocity;
+
+		if(rigidVel.x > maxSpeed)
+		{
+			rigidVel.x = (float)Math.Sign(rigidVel.x) * maxSpeed;
+			rigidBody.velocity = rigidVel;
+        }
+   //     if (rigidBody.velocity.sqrMagnitude >= maxSpeed * maxSpeed)
+			//rigidBody.velocity = rigidBody.velocity.normalized * maxSpeed;
 
 		if (Vector2.Dot(player.input.aimDirection, Vector2.up) > 0.5f)
 		{

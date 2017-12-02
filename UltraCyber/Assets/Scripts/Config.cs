@@ -5,7 +5,8 @@ public class Config : MonoBehaviour
 {
 	public float playerMovementForce;
 	public float playerJumpForce;
-	public float playerJumpDeceleration;
+	//public float playerJumpDeceleration;
+	public float playerJumpGraceTime = 0.2f;
 
 	public float maxSpeed = 10.0f;
 	public float pointsPerSecond = 2.0f;

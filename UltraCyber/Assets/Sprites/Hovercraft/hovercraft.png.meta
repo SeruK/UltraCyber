@@ -1,32 +1,78 @@
 fileFormatVersion: 2
-guid: 0162b9cebfdaccb4db896ce22d1f862a
+guid: e5586d6541d42d7449fdd90f2b0fcef2
+timeCreated: 1512236640
+licenseType: Free
 TextureImporter:
-  serializedVersion: 2
+  fileIDToRecycleName:
+    21300000: hovercraft_0
+    21300002: hovercraft_1
+    21300004: hovercraft_2
+    21300006: hovercraft_3
+    21300008: hovercraft_4
+    21300010: hovercraft_5
+    21300012: hovercraft_6
+    21300014: hovercraft_7
+    21300016: hovercraft_8
+    21300018: hovercraft_9
+    21300020: hovercraft_10
+    21300022: hovercraft_11
+    21300024: hovercraft_12
+    21300026: hovercraft_13
+    21300028: hovercraft_14
+    21300030: hovercraft_15
+    21300032: hovercraft_16
+    21300034: hovercraft_17
+    21300036: hovercraft_18
+    21300038: hovercraft_19
+    21300040: hovercraft_20
+    21300042: hovercraft_21
+    21300044: hovercraft_22
+    21300046: hovercraft_23
+    21300048: hovercraft_24
+    21300050: hovercraft_25
+    21300052: hovercraft_26
+    21300054: hovercraft_27
+    21300056: hovercraft_28
+    21300058: hovercraft_29
+    21300060: hovercraft_30
+    21300062: hovercraft_31
+    21300064: hovercraft_32
+    21300066: hovercraft_33
+    21300068: hovercraft_34
+    21300070: hovercraft_35
+  externalObjects: {}
+  serializedVersion: 4
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
+    sRGBTexture: 1
     linearTexture: 0
-    correctGamma: 0
     fadeOut: 0
     borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: .25
+    heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
-  generateCubemap: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
   seamlessCubemap: 0
-  textureFormat: -3
-  maxTextureSize: 1024
+  textureFormat: 1
+  maxTextureSize: 2048
   textureSettings:
-    filterMode: 0
-    aniso: 1
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
     mipBias: -1
-    wrapMode: 1
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -34,18 +80,50 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: .5, y: .5}
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 16
+  alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
-  buildTargetSettings:
-  - buildTarget: iPhone
-    maxTextureSize: 1024
-    textureFormat: -2
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
     compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: hovercraft_0
+    - serializedVersion: 2
+      name: hovercraft_0
       rect:
         serializedVersion: 2
         x: 0
@@ -54,7 +132,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_1
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_1
       rect:
         serializedVersion: 2
         x: 64
@@ -63,7 +146,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_2
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_2
       rect:
         serializedVersion: 2
         x: 128
@@ -72,7 +160,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_3
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_3
       rect:
         serializedVersion: 2
         x: 192
@@ -81,7 +174,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_4
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_4
       rect:
         serializedVersion: 2
         x: 256
@@ -90,7 +188,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_5
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_5
       rect:
         serializedVersion: 2
         x: 320
@@ -99,7 +202,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_6
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_6
       rect:
         serializedVersion: 2
         x: 384
@@ -108,7 +216,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_7
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_7
       rect:
         serializedVersion: 2
         x: 448
@@ -117,7 +230,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_8
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_8
       rect:
         serializedVersion: 2
         x: 512
@@ -126,7 +244,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_9
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_9
       rect:
         serializedVersion: 2
         x: 576
@@ -135,7 +258,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_10
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_10
       rect:
         serializedVersion: 2
         x: 640
@@ -144,7 +272,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_11
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_11
       rect:
         serializedVersion: 2
         x: 704
@@ -153,7 +286,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_12
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_12
       rect:
         serializedVersion: 2
         x: 768
@@ -162,7 +300,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_13
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_13
       rect:
         serializedVersion: 2
         x: 832
@@ -171,7 +314,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_14
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_14
       rect:
         serializedVersion: 2
         x: 896
@@ -180,7 +328,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_15
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_15
       rect:
         serializedVersion: 2
         x: 960
@@ -189,7 +342,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_16
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_16
       rect:
         serializedVersion: 2
         x: 1024
@@ -198,7 +356,12 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: hovercraft_17
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hovercraft_17
       rect:
         serializedVersion: 2
         x: 1088
@@ -207,5 +370,13 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    outline: []
+    physicsShape: []
   spritePackingTag: 
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

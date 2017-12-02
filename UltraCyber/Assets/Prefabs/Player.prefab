@@ -219,7 +219,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.2}
   serializedVersion: 2
-  m_Radius: 0.2
+  m_Radius: 0.1
 --- !u!61 &6100000
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -243,7 +243,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.38, y: 0.18}
+  m_Size: {x: 0.2, y: 0.18}
   m_EdgeRadius: 0
 --- !u!61 &6100002
 BoxCollider2D:
@@ -268,7 +268,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.2}
+  m_Size: {x: 0.2, y: 0.2}
   m_EdgeRadius: 0
 --- !u!95 &9500000
 Animator:
@@ -343,9 +343,7 @@ MonoBehaviour:
   gunAnimator: {fileID: 9500002}
   groundEventSender: {fileID: 11400002}
   movementForce: 0
-  jumpForce: 30
-  jumpDeceleration: 0
-  currentJumpForce: 0
+  jumpGraceTimer: 0
   score: 0
   lastScoreInt: 0
   weaponCooldown: 0
@@ -353,6 +351,7 @@ MonoBehaviour:
   bodyRenderer: {fileID: 21200000}
   gunRenderer: {fileID: 21200002}
   diskIndicator: {fileID: 21200004}
+  rigid: {fileID: 5000000}
   dataCooldown: 0
   dead: 0
 --- !u!114 &11400002

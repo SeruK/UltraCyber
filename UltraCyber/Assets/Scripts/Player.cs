@@ -22,9 +22,10 @@ public class Player : MonoBehaviour
 	public CollisionEventSender groundEventSender; 	
 
 	public float movementForce;
-	public float jumpForce;
-	public float jumpDeceleration;
-	public float currentJumpForce;
+	//public float jumpForce;
+	//public float jumpDeceleration;
+	//public float currentJumpForce;
+	public float jumpGraceTimer;
 
 	public float score;
 	public int lastScoreInt;
@@ -39,6 +40,8 @@ public class Player : MonoBehaviour
 	public SpriteRenderer gunRenderer;
 
 	public SpriteRenderer diskIndicator;
+
+	public Rigidbody2D rigid;
 
 	public float dataCooldown;
 

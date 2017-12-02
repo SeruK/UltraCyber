@@ -501,7 +501,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 000
+  m_Text: "P2:\r\n000"
 --- !u!222 &659181735
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -913,7 +913,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 000
+  m_Text: "P1:\r\n000"
 --- !u!222 &1058181986
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1470,8 +1470,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMovementForce: 1200
-  playerJumpForce: 5000
-  playerJumpDeceleration: 10500
+  playerJumpForce: 17
+  playerJumpGraceTime: 0.5
   maxSpeed: 8
   pointsPerSecond: 0.25
   diskHolderEndBonus: 2

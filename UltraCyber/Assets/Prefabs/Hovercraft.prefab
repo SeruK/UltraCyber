@@ -8,7 +8,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 400000}
-  - component: {fileID: 9500000}
   m_Layer: 0
   m_Name: Hovercraft
   m_TagString: Untagged
@@ -25,7 +24,7 @@ GameObject:
   m_Component:
   - component: {fileID: 400002}
   - component: {fileID: 21200000}
-  - component: {fileID: 9500002}
+  - component: {fileID: 114683687464691354}
   m_Layer: 0
   m_Name: Hovercraft
   m_TagString: Untagged
@@ -60,40 +59,6 @@ Transform:
   m_Father: {fileID: 400000}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &9500000
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d8796725036119d4c92819e194152ff2, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
---- !u!95 &9500002
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100002}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c198b963aa60c1b4597b2bf620491b48, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -128,12 +93,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0162b9cebfdaccb4db896ce22d1f862a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.64, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -149,3 +114,39 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!114 &114683687464691354
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eb394c2402288941919d16187526dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rend: {fileID: 21200000}
+  playAutomatically: Idle
+  fps: 16
+  anims:
+  - name: Idle
+    looping: 1
+    sprites:
+    - {fileID: 21300000, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300002, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300004, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300006, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300008, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300010, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300012, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300014, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300016, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300018, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300020, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300022, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300024, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300026, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300028, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300030, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300032, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
+    - {fileID: 21300034, guid: e5586d6541d42d7449fdd90f2b0fcef2, type: 3}
