@@ -26,7 +26,7 @@ public class Menu : MonoBehaviour {
 		StartCoroutine(PlayVoice());
 
 		SelectPlayButton();
-    }
+	}
 
 	bool shake = false;
 
@@ -60,15 +60,10 @@ public class Menu : MonoBehaviour {
 #endif // !USE_REWIRED
 	}
 
-	void SelectPlayButton()
+	public void SelectPlayButton()
 	{
 		EventSystem.current.SetSelectedGameObject(playButton);
     }
-
-	public void ToggleFullscreen()
-	{
-		Screen.fullScreen = !Screen.fullScreen;
-	}
 
 	public void LoadLevel()
 	{

@@ -1,5 +1,9 @@
 using UnityEngine;
+using UE = UnityEngine;
+using UI = UnityEngine.UI;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Game : MonoBehaviour
 {
@@ -59,14 +63,29 @@ public class Game : MonoBehaviour
 
 	public MapLoaderTurbo mapLoader;
 
+	public UI.Text gameText;
+	public UI.Text p1score;
+	public UI.Text p2score;
+
 	private float footstepCooldown;
 	private GameObject data;
 
 	float gameEndWait;
 
+	string debugString
+	{
+		get { return gameText.text; }
+		set { gameText.text = value; }
+	}
+
 	void OnEnable()
 	{
 		Restart();
+
+		p1score.text = "0000";
+		p1score.color = config.playerColors[0];
+		p2score.text = "0000";
+		p2score.color = config.playerColors[1];
 	}
 
 	void OnDisable()
@@ -397,6 +416,9 @@ public class Game : MonoBehaviour
 			Debug.LogError("derp");
 			break;
 		}
+
+		p1score.text = Mathf.FloorToInt(players[0].score).ToString().PadLeft(3, '0');
+		p2score.text = Mathf.FloorToInt(players[1].score).ToString().PadLeft(3, '0');
 	}
 
 	void AddScore(uint playerIndex, float score)
@@ -515,13 +537,15 @@ public class Game : MonoBehaviour
 		else if (p1 > p2)
 		{
 			playerOneWinsIndicator.enabled = true;
-			debugString = "Player one wins! Start to play again";
+			//debugString = "Player one wins! Start to play again";
+			debugString = "P1 wins!";
 			Debug.Log("P1 WINS!!!!");
 		}
 		else
 		{
 			playerTwoWinsIndicator.enabled = true;
-			debugString = "Player two wins! Start to play again";
+			//debugString = "Player two wins! Start to play again";
+			debugString = "P2 wins!";
 			Debug.Log("P2 WINS!!!!");
 		}
 
@@ -550,8 +574,6 @@ public class Game : MonoBehaviour
 			player.input.aimDirection = new Vector2(player.input.horizontal, GameInput.GetAxis(i, GameInput.Axis.AimVertical));
 		}
 	}
-
-	string debugString ="";
 
 	void UpdatePlayer(Player player)
 	{
@@ -801,29 +823,29 @@ public class Game : MonoBehaviour
 		}
 	}
 
-	void OnGUI()
-	{
-		GUI.skin = debugGUISkin;
-		GUILayout.Label(string.IsNullOrEmpty(debugString) ? "HERRO WROLD" : debugString);
+	//void OnGUI()
+	//{
+	//	GUI.skin = debugGUISkin;
+	//	GUILayout.Label(string.IsNullOrEmpty(debugString) ? "HERRO WROLD" : debugString);
 
-		if (players != null)
-		{
-			var ali = GUI.skin.label.alignment;
+	//	if (players != null)
+	//	{
+	//		var ali = GUI.skin.label.alignment;
 
-			GUI.skin.label.alignment = TextAnchor.LowerLeft;
+	//		GUI.skin.label.alignment = TextAnchor.LowerLeft;
 
-			GUI.color = config.playerColors[0];
-			if (players.Length > 0)
-				GUI.Label(new Rect(10.0f, Screen.height - 50.0f, Screen.width, 40.0f), "" + Mathf.FloorToInt(players[0].score));
-			GUI.color = config.playerColors[1];
+	//		GUI.color = config.playerColors[0];
+	//		if (players.Length > 0)
+	//			GUI.Label(new Rect(10.0f, Screen.height - 50.0f, Screen.width, 40.0f), "" + Mathf.FloorToInt(players[0].score));
+	//		GUI.color = config.playerColors[1];
 
-			GUI.skin.label.alignment = TextAnchor.LowerRight;
-			if (players.Length > 1)
-				GUI.Label(new Rect(Screen.width - 210.0f, Screen.height - 50.0f, 200.0f, 40.0f), "" + Mathf.FloorToInt(players[1].score));
-			GUI.skin.label.alignment = ali;
-			GUI.color = Color.white;
-		} 
+	//		GUI.skin.label.alignment = TextAnchor.LowerRight;
+	//		if (players.Length > 1)
+	//			GUI.Label(new Rect(Screen.width - 210.0f, Screen.height - 50.0f, 200.0f, 40.0f), "" + Mathf.FloorToInt(players[1].score));
+	//		GUI.skin.label.alignment = ali;
+	//		GUI.color = Color.white;
+	//	} 
 
-		GUI.skin = null;
-	}
+	//	GUI.skin = null;
+	//}
 }
