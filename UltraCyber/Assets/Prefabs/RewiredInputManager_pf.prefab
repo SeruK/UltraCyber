@@ -178,7 +178,7 @@ MonoBehaviour:
       _excludeFromControllerAutoAssignment: 1
     - _id: 1
       _name: Player0
-      _descriptiveName: Player0
+      _descriptiveName: Player 1
       _startPlaying: 1
       _defaultJoystickMaps:
       - _enabled: 1
@@ -196,7 +196,7 @@ MonoBehaviour:
       _excludeFromControllerAutoAssignment: 0
     - _id: 2
       _name: Player1
-      _descriptiveName: Player1
+      _descriptiveName: Player 2
       _startPlaying: 1
       _defaultJoystickMaps:
       - _enabled: 1
@@ -217,8 +217,8 @@ MonoBehaviour:
       _name: MoveHorizontal
       _type: 0
       _descriptiveName: Move Horizontal
-      _positiveDescriptiveName: MoveRight
-      _negativeDescriptiveName: MoveLeft
+      _positiveDescriptiveName: Move Right
+      _negativeDescriptiveName: Move Left
       _behaviorId: 0
       _userAssignable: 1
       _categoryId: 0
@@ -226,8 +226,8 @@ MonoBehaviour:
       _name: AimVertical
       _type: 0
       _descriptiveName: Aim Vertical
-      _positiveDescriptiveName: Move Up
-      _negativeDescriptiveName: Move Down
+      _positiveDescriptiveName: Aim Up
+      _negativeDescriptiveName: Aim Down
       _behaviorId: 0
       _userAssignable: 1
       _categoryId: 0
